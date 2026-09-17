@@ -1,0 +1,25 @@
+# Tarea 1: Procesamiento Digital de Señales
+# Instituto Tecnológico de Costa Rica
+
+# Computación numérica
+numpy>=1.21.0
+
+# Visualización y gráficos
+matplotlib>=3.4.0
+
+# Procesamiento científico y de señales
+scipy>=1.7.0
+
+# (Opcional) Consola interactiva mejorada
+ipython>=7.0.0
+
+# (Opcional) Para análisis de datos
+pandas>=1.3.0
+
+# (Opcional) Para pruebas unitarias
+pytest>=6.0.0
+pytest-cov>=2.12.0
+
+# (Opcional) Para Jupyter notebooks
+jupyter>=1.0.0
+jupyterlab>=3.0.0
