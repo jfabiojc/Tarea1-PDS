@@ -22,3 +22,18 @@ Thumbs.db
 # Archivos temporales
 *.tmp
 *.log
+
+# Archivos auxiliares de LaTeX (solo se versiona .tex y .pdf)
+*.aux
+*.fdb_latexmk
+*.fls
+*.synctex.gz
+*.toc
+*.out
+*.lof
+*.lot
+*.bbl
+*.blg
+*.nav
+*.snm
+*.vrb
