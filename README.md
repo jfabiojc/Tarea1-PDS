@@ -50,7 +50,6 @@ tarea1_pds/
 ├── README.md # Este archivo
 ├── requirements.txt # Dependencias Python
 ├── .gitignore # Archivos ignorados por Git
-├── informe.pdf # Reporte con respuestas teóricas
 ├── src/
 │ ├── problema_1.py # Muestreo y aliasing musicales
 │ ├── problema_2.py # Visualización de señal y alias
@@ -59,7 +58,9 @@ tarea1_pds/
 │ ├── problema_5.py # Caso de conducción temeraria
 │ └── utils.py # Funciones auxiliares
 └── docs/
-└── notas.md # Notas adicionales
+├── enunciado.pdf # Enunciado de la tarea (entregado por el profesor)
+├── informe.tex # Fuente LaTeX del reporte
+└── informe.pdf # Reporte con respuestas teóricas (compilado)
 
 
 ## Ejecución
