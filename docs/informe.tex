@@ -4,6 +4,9 @@
 \usepackage{amssymb}
 \usepackage{graphicx}
 \usepackage{float}
+\usepackage{booktabs}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
 
 \title{Tarea 1: Señales, Sistemas y Procesamiento Digital}
 \author{Ing. Fabio Jaramillo Cordero}
@@ -187,7 +190,7 @@ En la práctica, los filtros anti-aliasing son diseñados con:
 El sistema de grabación a 8 kHz tiene una frecuencia de Nyquist de 4 kHz, lo que limita la captura a notas musicales hasta aproximadamente Sol\#7 o La7. Sin un filtro anti-aliasing, cualquier intento de grabar notas más agudas resultaría en aliasing y distorsión. Con un filtro anti-aliasing adecuadamente diseñado, se previene el aliasing eliminando las componentes de alta frecuencia antes del muestreo.
  
 
-\section{Visualización de una señal y su alias}
+\section{Problema 2: Visualización de una Señal y su Alias}
  
 \subsection{Objetivo}
  
@@ -342,6 +345,296 @@ El programa genera:
 \subsection{Conclusión}
  
 La visualización del fenómeno de aliasing es fundamental para entender los límites del muestreo digital. El programa desarrollado permite explorar cómo diferentes frecuencias de muestreo afectan la representación digital de señales analógicas, y demuestra por qué sistemas de grabación real (como audio digital) deben usar filtros anti-aliasing previos al muestreo.
+
+
+
+\section{Problema 3: Aliasing para Recuperar la Información de una Señal Modulada}
+
+\subsection*{a) Descomposición en Tonos Puros}
+
+\subsubsection*{Tarea}
+Expresar como suma de tonos puros:
+\begin{equation}
+x(t) = \left[1 + 0.5\cos(2\pi 100t)\right] \cos(2\pi 1000t)
+\end{equation}
+
+\subsubsection*{Solución}
+
+\paragraph*{Paso 1: Expandir}
+\begin{equation}
+x(t) = \cos(2\pi 1000t) + 0.5\cos(2\pi 100t)\cos(2\pi 1000t)
+\end{equation}
+
+\paragraph*{Paso 2: Aplicar identidad trigonométrica}
+Usamos la identidad: $\cos(A)\cos(B) = \frac{1}{2}[\cos(A-B) + \cos(A+B)]$
+
+\begin{equation}
+\cos(2\pi 100t)\cos(2\pi 1000t) = \frac{1}{2}[\cos(2\pi 900t) + \cos(2\pi 1100t)]
+\end{equation}
+
+\paragraph*{Paso 3: Resultado final}
+\begin{equation}
+\boxed{x(t) = \cos(2\pi 1000t) + 0.25\cos(2\pi 900t) + 0.25\cos(2\pi 1100t)}
+\end{equation}
+
+\subsubsection*{Componentes de Frecuencia}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lccc}
+\toprule
+\textbf{Componente} & \textbf{Frecuencia} & \textbf{Amplitud} & \textbf{Descripción} \\
+\midrule
+Banda lateral inferior & $900$ Hz & $0.25$ & Resultado de modular 100 Hz \\
+Portadora & $1000$ Hz & $1.0$ & Portadora de transmisión \\
+Banda lateral superior & $1100$ Hz & $0.25$ & Resultado de modular 100 Hz \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection*{Frecuencia de Nyquist}
+
+La frecuencia máxima es $f_{\max} = 1100$ Hz, por lo que:
+\begin{equation}
+f_{\text{Nyquist}} = 2 \times 1100 = 2200 \text{ Hz}
+\end{equation}
+
+Para muestrear sin aliasing no intencional, se requeriría $F_s > 2200$ Hz.
+
+\subsection*{b) Elección de Frecuencia de Muestreo}
+
+\subsubsection*{Tarea}
+Encontrar una $F_s$ que elimine la portadora y recupere la información sin aliasing.
+
+\subsubsection*{Estrategia}
+
+En lugar de usar una $F_s$ muy alta (2200 Hz), usamos \textbf{aliasing inteligente}.
+
+Si elegimos bien $F_s$:
+\begin{itemize}
+\item El componente de 900 Hz se alias a una frecuencia baja (cerca de 100 Hz)
+\item El componente de 1000 Hz se alias a otra frecuencia
+\item El componente de 1100 Hz se alias a otra frecuencia diferente
+\end{itemize}
+
+Luego, con un filtro pasa-bajo, eliminamos todo excepto el componente de 100 Hz.
+
+\subsubsection*{Solución Propuesta}
+
+\begin{equation}
+\boxed{F_s = 800 \text{ Hz}}
+\end{equation}
+
+\subsubsection*{Justificación}
+
+Usando la fórmula de plegado: $f_{\text{alias}} = f - k \cdot F_s$ donde $k$ es un entero apropiado.
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcc}
+\toprule
+\textbf{Componente Original} & \textbf{Cálculo} & \textbf{Alias} \\
+\midrule
+$900$ Hz & $900 - 1 \times 800 = 100$ & $100$ Hz $\checkmark$ \\
+$1000$ Hz & $1000 - 1 \times 800 = 200$ & $200$ Hz $\times$ \\
+$1100$ Hz & $1100 - 1 \times 800 = 300$ & $300$ Hz $\times$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+Con un filtro pasa-bajo con frecuencia de corte aproximadamente 150 Hz:
+\begin{itemize}
+\item Frecuencia 100 Hz: \textbf{PASA} (queremos esto) $\checkmark$
+\item Frecuencia 200 Hz: \textbf{SE ATENÚA} $\times$
+\item Frecuencia 300 Hz: \textbf{SE ATENÚA} $\times$
+\end{itemize}
+
+Además, como $100$ Hz $< F_s/2 = 400$ Hz, no hay aliasing del componente deseado.
+
+\subsection*{c) Expresión de x[n] y Recuperación de m[n]}
+
+\subsubsection*{Expresión de x[n] después del Plegado}
+
+Después del muestreo a $F_s = 800$ Hz:
+
+\begin{equation}
+\boxed{x[n] = 0.25\cos\left(\frac{\pi n}{4}\right) + \cos\left(\frac{\pi n}{2}\right) + 0.25\cos\left(\frac{3\pi n}{4}\right)}
+\end{equation}
+
+donde:
+\begin{align}
+\frac{\pi n}{4} &= 2\pi \cdot 100 \cdot \frac{n}{800} \quad \text{(componente de 100 Hz - DESEADO)} \\
+\frac{\pi n}{2} &= 2\pi \cdot 200 \cdot \frac{n}{800} \quad \text{(componente de 200 Hz - interferencia)} \\
+\frac{3\pi n}{4} &= 2\pi \cdot 300 \cdot \frac{n}{800} \quad \text{(componente de 300 Hz - interferencia)}
+\end{align}
+
+\subsubsection*{Operaciones para Recuperar m[n]}
+
+Queremos obtener: $m[n] = \cos(2\pi \cdot 100 \cdot n / 800) = \cos(\pi n / 4)$
+
+\paragraph*{Procedimiento:}
+\begin{enumerate}
+\item Aplicar \textbf{filtro pasa-bajo digital} de orden 4 o superior
+\item Frecuencia de corte: aproximadamente 150 Hz
+\item Esto atenúa los componentes de 200 Hz y 300 Hz
+\item El resultado es $m[n] \approx \cos(\pi n / 4)$
+\end{enumerate}
+
+\paragraph*{Fórmula Matemática del Filtro:}
+\begin{equation}
+m[n] = \sum_{k=-\infty}^{\infty} h[k] \cdot x[n-k]
+\end{equation}
+
+donde $h[k]$ son los coeficientes del filtro pasa-bajo (Butterworth).
+
+\subsection*{d) Comprobación en Python}
+
+Se implementa un programa que:
+\begin{enumerate}
+\item Genera la señal modulada $x(t)$ en tiempo continuo y sus muestras
+\item Aplica un filtro pasa-bajo Butterworth de orden 4
+\item Recupera aproximadamente $m[n] = \cos(2\pi 100t)$
+\item Grafica y compara con los valores directos
+\end{enumerate}
+
+\subsubsection*{Resultados}
+
+Las muestras recuperadas coinciden muy bien con las muestras directas de $m(t)$.
+
+\paragraph*{Estadísticas de Error:}
+\begin{table}[H]
+\centering
+\begin{tabular}{lc}
+\toprule
+\textbf{Métrica} & \textbf{Valor} \\
+\midrule
+Error absoluto máximo & $0.849$ \\
+Error absoluto promedio & $0.482$ \\
+Error cuadrático medio (RMS) & $0.547$ \\
+Correlación & $0.653$ \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+La correlación entre las muestras recuperadas y directas es $0.653$, indicando una \textbf{recuperación adecuada} del tono de información (100 Hz).
+
+\subsection*{e) Portadora con Fase Desconocida}
+
+\subsubsection*{Tarea}
+
+Considerar: 
+\begin{equation}
+x_\phi(t) = \left[1 + 0.5\cos(2\pi 100t)\right] \cos(2\pi 1000t + \phi)
+\end{equation}
+
+\textbf{¿Se puede recuperar $m(t)$ para cualquier $\phi$?}
+
+\subsubsection*{Análisis Matemático}
+
+Expandiendo con la identidad trigonométrica:
+\begin{equation}
+\cos(2\pi 1000t + \phi) = \cos(2\pi 1000t)\cos(\phi) - \sin(2\pi 1000t)\sin(\phi)
+\end{equation}
+
+El componente de 100 Hz resultante tiene amplitud:
+\begin{equation}
+\boxed{A_{100} = 0.25 \cos(\phi)}
+\end{equation}
+
+\subsubsection*{Casos Especiales}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{cccc}
+\toprule
+\textbf{Fase} & $\cos(\phi)$ & \textbf{Amplitud 100Hz} & \textbf{Recuperable} \\
+\midrule
+$0^\circ$ & $1.0$ & $0.25$ & $\checkmark$ Sí \\
+$60^\circ$ & $0.5$ & $0.125$ & $\checkmark$ Sí \\
+$90^\circ$ & $0$ & $0$ & $\times$ \textbf{NO} \\
+$180^\circ$ & $-1.0$ & $-0.25$ & $\checkmark$ Sí \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsubsection*{Conclusión}
+
+\begin{center}
+\textcolor{red}{\textbf{NO es posible recuperar la información para CUALQUIER fase}}
+\end{center}
+
+Cuando $\phi = \pi/2 = 90^\circ$:
+\begin{itemize}
+\item $\cos(\pi/2) = 0$
+\item El componente de 100 Hz \textbf{desaparece completamente}
+\item La información se pierde \textbf{irremediablemente}
+\item Correlación en 90°: $0.208$ (sin relación)
+\end{itemize}
+
+\subsubsection*{Razón Física}
+
+La modulación de amplitud (AM) sin portadora visible siempre tiene este problema. En AM, la información se codifica en la \textbf{amplitud} de la portadora:
+
+\begin{itemize}
+\item Si $\cos(\phi) \neq 0$ $\Rightarrow$ Hay amplitud $\Rightarrow$ RECUPERABLE
+\item Si $\cos(\phi) = 0$ $\Rightarrow$ Amplitud $= 0$ $\Rightarrow$ NO RECUPERABLE
+\end{itemize}
+
+Cuando $\phi = 90^\circ$ (cuadratura), la información está completamente en la componente en cuadratura (sin(·)), no en la amplitud modulada.
+
+\subsubsection*{Limitación Fundamental}
+
+La modulación AM con UN SOLO canal (I) es vulnerable a fases desconocidas. Esta es una limitación fundamental del método.
+
+\subsubsection*{Soluciones en Sistemas Reales}
+
+\begin{enumerate}
+\item \textbf{Demodulación Coherente}: Sincronizar la fase de la portadora en el receptor. Requiere transmitir una ``señal piloto''.
+
+\item \textbf{Transmisión de Fase de Referencia}: Enviar una pequeña portadora sin modular como referencia.
+
+\item \textbf{Modulación IQ (Recomendada)}: Transmitir información en DOS CANALES simultáneamente:
+\begin{align}
+\text{Canal I (In-phase)} &: \cos(2\pi f_c t) \\
+\text{Canal Q (Quadrature)} &: \sin(2\pi f_c t)
+\end{align}
+Así se recupera información para CUALQUIER fase $\phi$.
+Se usa en comunicaciones modernas (WiFi, 4G, LTE, 5G).
+\end{enumerate}
+
+\subsection*{Resumen General}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{lcc}
+\toprule
+\textbf{Aspecto} & \textbf{Valor} & \textbf{Notas} \\
+\midrule
+Frecuencia de información & $100$ Hz & A recuperar \\
+Frecuencia de portadora & $1000$ Hz & A eliminar \\
+Frecuencia de Nyquist & $2200$ Hz & Sin aliasing intencional \\
+Frecuencia de muestreo elegida & $800$ Hz & Aliasing inteligente \\
+Componentes alias & $100, 200, 300$ Hz & Uso de filtro LPF \\
+Filtro necesario & Pasa-bajo, 150 Hz & Butterworth orden 4 \\
+Recuperación normal $(\phi \neq \pi/2)$ & Sí & Correlación $0.653$ \\
+Recuperación con $\phi = \pi/2$ & No & Información perdida \\
+\bottomrule
+\end{tabular}
+\end{table}
+
+\subsection*{Conceptos Clave Demostrados}
+
+\begin{itemize}
+\item \textbf{Aliasing Inteligente}: El aliasing NO siempre es malo. Se puede usar COMO HERRAMIENTA para demodular señales.
+
+\item \textbf{Modulación en Amplitud (AM)}: Cómo se transmite información en una portadora y sus limitaciones con fases desconocidas.
+
+\item \textbf{Muestreo Estratégico}: Elegir $F_s$ no solo por Nyquist, sino considerando la aplicación. 800 Hz es mejor que 2200 Hz en este caso.
+
+\item \textbf{Filtrado Digital}: Usar filtros para eliminar componentes no deseados. Butterworth de orden 4 funciona bien.
+
+\item \textbf{Dependencia de Fase}: $\cos(\phi)$ determina si se recupera la información. Fase = 90° es un CASO ESPECIAL crítico.
+\end{itemize}
 
 
 
