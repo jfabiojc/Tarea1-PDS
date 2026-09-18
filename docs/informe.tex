@@ -3,9 +3,10 @@
 \usepackage{amsmath}
 \usepackage{amssymb}
 \usepackage{graphicx}
+\usepackage{float}
 
 \title{Tarea 1: Señales, Sistemas y Procesamiento Digital}
-\author{Tu Nombre}
+\author{Ing. Fabio Jaramillo Cordero}
 \date{Septiembre 2026}
 
 \begin{document}
@@ -14,6 +15,334 @@
 
 \section{Problema 1: Muestreo y Aliasing}
 
-Contenido aquí...
+Se dispone de un sistema digital que captura audio a una frecuencia de muestreo de \(f_s = 8 \text{ kHz}\). El sistema debe grabar instrumentos musicales que emiten tonos puros (señales sinusoidales).
+ 
+\subsection*{a) Frecuencia de Muestreo y Frecuencia de Plegado}
+ 
+La \textbf{frecuencia de muestreo} del sistema es:
+\[
+f_s = 8 \text{ kHz} = 8000 \text{ Hz}
+\]
+ 
+La \textbf{frecuencia de plegado} (o frecuencia de Nyquist) se define como:
+\[
+f_N = \frac{f_s}{2} = \frac{8000}{2} = 4000 \text{ Hz} = 4 \text{ kHz}
+\]
+ 
+Esta es la máxima frecuencia que el sistema puede capturar sin que ocurra aliasing. Cualquier componente de frecuencia superior a \(f_N\) será distorsionada.
+ 
+\subsection*{b) Nota Musical Más Alta Que Puede Grabarse}
+ 
+Para determinar la nota musical más alta, utilizamos la fórmula de frecuencia musical:
+\[
+F = F_{\text{La4}} \cdot 2^{n/12}
+\]
+ 
+donde:
+\begin{itemize}
+    \item \(F_{\text{La4}} = 440 \text{ Hz}\) (frecuencia de referencia)
+    \item \(n\) es el número de semitonos desde La4
+    \item \(F \leq f_N = 4000 \text{ Hz}\) (limitación de Nyquist)
+\end{itemize}
+ 
+Resolviendo para \(n\):
+\[
+4000 = 440 \cdot 2^{n/12}
+\]
+ 
+\[
+\frac{4000}{440} = 2^{n/12}
+\]
+ 
+\[
+9.0909 = 2^{n/12}
+\]
+ 
+Aplicando logaritmo base 2:
+\[
+\log_2(9.0909) = \frac{n}{12}
+\]
+ 
+\[
+3.1842 = \frac{n}{12}
+\]
+ 
+\[
+n = 38.21 \text{ semitonos}
+\]
+ 
+Contando 38 semitonos desde La4:
+\begin{itemize}
+    \item La4 (0 semitonos)
+    \item La\#4, Si4, Do5, Do\#5, Re5, Re\#5, Mi5, Fa5, Fa\#5, Sol5, Sol\#5, La5 (12 semitonos)
+    \item La\#5, Si5, Do6, Do\#6, Re6, Re\#6, Mi6, Fa6, Fa\#6, Sol6, Sol\#6, La6 (24 semitonos)
+    \item La\#6, Si6, Do7, Do\#7, Re7, Re\#7, Mi7, Fa7, Fa\#7 (36 semitonos)
+    \item Sol7 (37 semitonos)
+    \item Sol\#7 (38 semitonos) $\approx$ 3948 Hz
+\end{itemize}
+ 
+La nota más alta es aproximadamente \textbf{Sol\#7} (o La7, dependiendo del redondeo), con una frecuencia de aproximadamente:
+\[
+F_{\text{Sol\#7}} = 440 \cdot 2^{38/12} \approx 3948 \text{ Hz}
+\]
+ 
+o más precisamente:
+\[
+F_{\text{La7}} = 440 \cdot 2^{39/12} \approx 3520 \text{ Hz}
+\]
+ 
+\textbf{Respuesta:} La nota más alta que puede grabarse es aproximadamente \textbf{Sol\#7 o La7}, con frecuencias cercanas a 3948-4000 Hz.
+ 
+\subsection*{c) Aliasing en Grabación de Notas de Piccolo}
+ 
+Cuando un intérprete intenta grabar una nota cuya frecuencia es superior a la frecuencia de Nyquist (\(f_N = 4000 \text{ Hz}\)), ocurre el fenómeno de \textbf{aliasing}.
+ 
+\subsubsection*{¿Qué ocurre durante la grabación?}
+ 
+Si se intenta grabar una nota con frecuencia \(f > f_N\), la teoría del muestreo establece que dicha componente de frecuencia se ``refleja'' o ``dobla'' dentro del rango de Nyquist, creando una componente de frecuencia alias:
+ 
+\[
+f_{\text{alias}} = |f - k \cdot f_s|
+\]
+ 
+donde \(k\) es un entero seleccionado tal que \(f_{\text{alias}} < f_N\).
+ 
+\subsubsection*{Consecuencias audibles:}
+ 
+\begin{enumerate}
+    \item \textbf{Distorsión de la nota:} La nota grabada no será la que realmente se tocó, sino una nota diferente (la frecuencia alias).
+    
+    \item \textbf{Sonido artefactual:} Al reproducir la grabación, se escuchará una nota musical completamente distinta, frecuentemente más grave que la original.
+    
+    \item \textbf{Pérdida de información:} La información original de la nota de alta frecuencia se pierde permanentemente durante el muestreo.
+    
+    \item \textbf{Ejemplo:} Si se graba una nota a \(f = 5000 \text{ Hz}\), el alias sería:
+    \[
+    f_{\text{alias}} = 5000 - 8000 = -3000 \text{ Hz} \rightarrow |f_{\text{alias}}| = 3000 \text{ Hz}
+    \]
+    Se escucharía una nota correspondiente a 3000 Hz en lugar de 5000 Hz.
+\end{enumerate}
+ 
+\textbf{Explicación del fenómeno:} El Teorema de Nyquist-Shannon establece que para reconstruir fielmente una señal analógica, la frecuencia de muestreo debe ser al menos el doble de la frecuencia máxima presente en la señal. Si esta condición no se cumple, las componentes de alta frecuencia se ``replican'' en las bajas frecuencias, causando aliasing.
+ 
+\subsection*{d) Filtro Anti-aliasing}
+ 
+Un \textbf{filtro anti-aliasing} es un filtro paso-bajo analógico que se aplica a la señal \textbf{antes} del proceso de muestreo. Su objetivo es eliminar todas las componentes de frecuencia superiores a la frecuencia de Nyquist.
+ 
+\subsubsection*{Características del filtro anti-aliasing:}
+ 
+\begin{itemize}
+    \item \textbf{Tipo:} Filtro paso-bajo (low-pass filter)
+    \item \textbf{Ubicación en la cadena:} Se aplica \textbf{antes} del convertidor analógico-digital (ADC)
+    \item \textbf{Frecuencia de corte:} \(f_c = f_N = \frac{f_s}{2} = 4000 \text{ Hz}\)
+    \item \textbf{Atenuación:} Atenúa significativamente todas las frecuencias superiores a \(f_c\)
+\end{itemize}
+ 
+\subsubsection*{Funcionamiento:}
+ 
+El filtro anti-aliasing actúa eliminando (o atenuando fuertemente) todas las componentes espectrales de la señal que superen la frecuencia de Nyquist:
+ 
+\[
+H(f) = \begin{cases}
+1 & \text{si } |f| \leq f_N \\
+0 & \text{si } |f| > f_N
+\end{cases}
+\]
+ 
+donde \(H(f)\) es la respuesta en frecuencia del filtro ideal.
+ 
+\subsubsection*{Resolución del problema de aliasing:}
+ 
+Con un filtro anti-aliasing adecuado:
+ 
+\begin{enumerate}
+    \item \textbf{Prevención:} Las componentes de frecuencia superiores a \(f_N\) se eliminan antes del muestreo, por lo que no pueden generar aliasing.
+    
+    \item \textbf{Preservación de información útil:} Se mantienen íntegramente todas las componentes en el rango \([0, f_N]\), preservando la información musical de interés.
+    
+    \item \textbf{Reconstrucción fiel:} La señal muestreada puede ser reconstruida fielmente sin artefactos de aliasing.
+    
+    \item \textbf{Ejemplo en nuestro sistema:} Con un filtro anti-aliasing de 4 kHz en un sistema de 8 kHz:
+    \begin{itemize}
+        \item Una nota de 3000 Hz se graba sin distorsión
+        \item Una nota de 5000 Hz se atenúa/elimina antes del muestreo
+        \item No ocurre aliasing de la nota de 5000 Hz
+    \end{itemize}
+\end{enumerate}
+ 
+\subsubsection*{Implementación práctica:}
+ 
+En la práctica, los filtros anti-aliasing son diseñados con:
+ 
+\begin{itemize}
+    \item \textbf{Respuesta suave:} No es un filtro ideal (rectangular), sino que tienen una pendiente gradual (típicamente 40-48 dB/octava para filtros de segundo orden o superior).
+    
+    \item \textbf{Margen de seguridad:} La frecuencia de corte real es ligeramente inferior a \(f_N\) para garantizar que se atenúen suficientemente las componentes cercanas a Nyquist.
+    
+    \item \textbf{Orden del filtro:} Filtros de orden superior (2º, 4º, 8º orden) proporcionan mejor atenuación fuera de banda.
+\end{itemize}
+ 
+\section*{Conclusión}
+ 
+El sistema de grabación a 8 kHz tiene una frecuencia de Nyquist de 4 kHz, lo que limita la captura a notas musicales hasta aproximadamente Sol\#7 o La7. Sin un filtro anti-aliasing, cualquier intento de grabar notas más agudas resultaría en aliasing y distorsión. Con un filtro anti-aliasing adecuadamente diseñado, se previene el aliasing eliminando las componentes de alta frecuencia antes del muestreo.
+ 
+
+\section{Visualización de una señal y su alias}
+ 
+\subsection{Objetivo}
+ 
+Crear un programa en Python que grafique una señal sinusoidal, su alias y las muestras tomadas durante el muestreo a una frecuencia específica.
+ 
+\subsection{Conceptos teóricos}
+ 
+\subsubsection{Muestreo de señales}
+ 
+El muestreo es el proceso de obtener valores discretos de una señal continua en intervalos regulares. Si se muestrea una señal sinusoidal:
+ 
+\begin{equation}
+x(t) = \sin(2\pi F t)
+\end{equation}
+ 
+con una frecuencia de muestreo $F_s$, se obtienen las muestras:
+ 
+\begin{equation}
+x[n] = \sin\left(2\pi F \frac{n}{F_s}\right)
+\end{equation}
+ 
+donde $n = 0, 1, 2, \ldots$ es el índice de la muestra y $t_n = n/F_s$ es el instante de muestreo.
+ 
+\subsubsection{Teorema de Nyquist}
+ 
+El teorema de muestreo de Nyquist-Shannon establece que para reconstruir una señal sin pérdida de información, la frecuencia de muestreo debe ser mayor que el doble de la frecuencia máxima de la señal:
+ 
+\begin{equation}
+F_s > 2 F_{\max}
+\end{equation}
+ 
+La frecuencia de Nyquist se define como:
+ 
+\begin{equation}
+F_{\text{Nyquist}} = \frac{F_s}{2}
+\end{equation}
+ 
+\subsubsection{Aliasing}
+ 
+El aliasing es un fenómeno que ocurre cuando la frecuencia de una señal excede la frecuencia de Nyquist. En este caso, el muestreo captura muestras que parecen corresponder a una frecuencia diferente (menor), llamada frecuencia alias.
+ 
+Para una señal con frecuencia $F$, la frecuencia alias $F_{\text{alias}}$ en el rango $[-F_s/2, F_s/2]$ se calcula como:
+ 
+\begin{equation}
+F_{\text{alias}} = F - k \cdot F_s
+\end{equation}
+ 
+donde $k$ es un entero elegido tal que $F_{\text{alias}}$ cae dentro del rango de Nyquist.
+ 
+De manera más general, se realiza un ``plegado'' de la frecuencia:
+ 
+\begin{enumerate}
+	\item Si $F > F_s/2$: se refleja la frecuencia alrededor de $F_s/2$.
+	\item Si el resultado sigue siendo mayor que $F_s/2$: se repite el proceso.
+\end{enumerate}
+ 
+\subsection{Implementación}
+ 
+\subsubsection{Parámetros de entrada}
+ 
+El programa solicita al usuario:
+ 
+\begin{itemize}
+	\item \textbf{Frecuencia natural} $F$ (en Hz): la frecuencia de la señal sinusoidal original.
+	\item \textbf{Frecuencia de muestreo} $F_s$ (en Hz): la velocidad a la cual se toman las muestras.
+	\item \textbf{Número de ciclos} a mostrar: cantidad de oscilaciones completas a visualizar.
+\end{itemize}
+ 
+\subsubsection{Cálculo del alias}
+ 
+Dado $F$ y $F_s$, se calcula:
+ 
+\begin{equation}
+F_{\text{alias}} = \begin{cases}
+F & \text{si } |F| \leq F_s/2 \\
+F - n \cdot F_s & \text{si } |F| > F_s/2, \text{ con } n \text{ tal que } |F_{\text{alias}}| \leq F_s/2
+\end{cases}
+\end{equation}
+ 
+\subsubsection{Generación de gráficas}
+ 
+El programa genera dos gráficas:
+ 
+\begin{enumerate}
+	\item \textbf{Primera gráfica}: muestra la señal original (línea azul continua), la señal alias si existe (línea roja punteada) y las muestras tomadas (puntos negros).
+	\item \textbf{Segunda gráfica}: muestra únicamente las muestras (tallos) y la señal que se interpreta a partir de ellas.
+\end{enumerate}
+ 
+Los ejes horizontales están etiquetados en unidades de tiempo (segundos).
+ 
+\subsection{Ejemplo numérico}
+ 
+Se reproduce el ejemplo de la tarea propuesta:
+ 
+\begin{itemize}
+	\item Frecuencia original: $F = 5/7 \approx 0.714$ Hz
+	\item Frecuencia de muestreo: $F_s = 1$ Hz
+	\item Frecuencia de Nyquist: $F_{\text{Nyquist}} = 0.5$ Hz
+	\item Número de ciclos: $3$
+\end{itemize}
+ 
+Cálculo del alias:
+ 
+\begin{equation}
+F_{\text{alias}} = \frac{5}{7} - 1 = -\frac{2}{7} \approx -0.286 \text{ Hz}
+\end{equation}
+ 
+Las muestras tomadas en $t_n = n/F_s$ para $n = 0, 1, 2, 3, 4$ son:
+ 
+\begin{equation}
+x[n] = \sin\left(2\pi \cdot \frac{5}{7} \cdot n\right)
+\end{equation}
+ 
+\begin{table}[H]
+	\centering
+	\begin{tabular}{|c|c|c|}
+		\hline
+		$n$ & $t_n$ (s) & $x[n]$ \\
+		\hline
+		0 & 0.000 & 0.000 \\
+		1 & 1.000 & 0.782 \\
+		2 & 2.000 & 0.975 \\
+		3 & 3.000 & 0.434 \\
+		4 & 4.000 & $-0.434$ \\
+		\hline
+	\end{tabular}
+	\caption{Muestras de la señal con $F = 5/7$ Hz y $F_s = 1$ Hz}
+\end{table}
+ 
+Estas mismas muestras pueden interpretarse también como provenientes de una señal con frecuencia alias $F_{\text{alias}} = -2/7$ Hz.
+ 
+\subsection{Resultados esperados}
+ 
+El programa genera gráficas que visualizan:
+ 
+\begin{enumerate}
+	\item La diferencia entre la señal original y la señal alias.
+	\item Cómo las muestras discretas pueden ser interpretadas de múltiples formas.
+	\item El efecto del aliasing: si $F > F_{\text{Nyquist}}$, las muestras no representan fielmente la frecuencia original.
+\end{enumerate}
+ 
+Este ejemplo ilustra por qué es importante respetar el teorema de Nyquist en aplicaciones de procesamiento digital de señales.
+ 
+\subsection{Archivos generados}
+ 
+El programa genera:
+ 
+\begin{itemize}
+	\item \textbf{figura\_problema2.png}: gráfica con la visualización de la señal, su alias y las muestras.
+\end{itemize}
+ 
+\subsection{Conclusión}
+ 
+La visualización del fenómeno de aliasing es fundamental para entender los límites del muestreo digital. El programa desarrollado permite explorar cómo diferentes frecuencias de muestreo afectan la representación digital de señales analógicas, y demuestra por qué sistemas de grabación real (como audio digital) deben usar filtros anti-aliasing previos al muestreo.
+
+
 
 \end{document}
