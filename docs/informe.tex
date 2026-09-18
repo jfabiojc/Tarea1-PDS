@@ -185,20 +185,20 @@ En la práctica, los filtros anti-aliasing son diseñados con:
     \item \textbf{Orden del filtro:} Filtros de orden superior (2º, 4º, 8º orden) proporcionan mejor atenuación fuera de banda.
 \end{itemize}
  
-\section*{Conclusión}
- 
+\subsection*{Conclusión}
+
 El sistema de grabación a 8 kHz tiene una frecuencia de Nyquist de 4 kHz, lo que limita la captura a notas musicales hasta aproximadamente Sol\#7 o La7. Sin un filtro anti-aliasing, cualquier intento de grabar notas más agudas resultaría en aliasing y distorsión. Con un filtro anti-aliasing adecuadamente diseñado, se previene el aliasing eliminando las componentes de alta frecuencia antes del muestreo.
  
 
 \section{Problema 2: Visualización de una Señal y su Alias}
  
-\subsection{Objetivo}
+\subsection*{Objetivo}
  
 Crear un programa en Python que grafique una señal sinusoidal, su alias y las muestras tomadas durante el muestreo a una frecuencia específica.
  
-\subsection{Conceptos teóricos}
+\subsection*{Conceptos teóricos}
  
-\subsubsection{Muestreo de señales}
+\subsubsection*{Muestreo de señales}
  
 El muestreo es el proceso de obtener valores discretos de una señal continua en intervalos regulares. Si se muestrea una señal sinusoidal:
  
@@ -214,7 +214,7 @@ x[n] = \sin\left(2\pi F \frac{n}{F_s}\right)
  
 donde $n = 0, 1, 2, \ldots$ es el índice de la muestra y $t_n = n/F_s$ es el instante de muestreo.
  
-\subsubsection{Teorema de Nyquist}
+\subsubsection*{Teorema de Nyquist}
  
 El teorema de muestreo de Nyquist-Shannon establece que para reconstruir una señal sin pérdida de información, la frecuencia de muestreo debe ser mayor que el doble de la frecuencia máxima de la señal:
  
@@ -228,7 +228,7 @@ La frecuencia de Nyquist se define como:
 F_{\text{Nyquist}} = \frac{F_s}{2}
 \end{equation}
  
-\subsubsection{Aliasing}
+\subsubsection*{Aliasing}
  
 El aliasing es un fenómeno que ocurre cuando la frecuencia de una señal excede la frecuencia de Nyquist. En este caso, el muestreo captura muestras que parecen corresponder a una frecuencia diferente (menor), llamada frecuencia alias.
  
@@ -247,9 +247,9 @@ De manera más general, se realiza un ``plegado'' de la frecuencia:
 	\item Si el resultado sigue siendo mayor que $F_s/2$: se repite el proceso.
 \end{enumerate}
  
-\subsection{Implementación}
+\subsection*{Implementación}
  
-\subsubsection{Parámetros de entrada}
+\subsubsection*{Parámetros de entrada}
  
 El programa solicita al usuario:
  
@@ -259,7 +259,7 @@ El programa solicita al usuario:
 	\item \textbf{Número de ciclos} a mostrar: cantidad de oscilaciones completas a visualizar.
 \end{itemize}
  
-\subsubsection{Cálculo del alias}
+\subsubsection*{Cálculo del alias}
  
 Dado $F$ y $F_s$, se calcula:
  
@@ -270,7 +270,7 @@ F - n \cdot F_s & \text{si } |F| > F_s/2, \text{ con } n \text{ tal que } |F_{\t
 \end{cases}
 \end{equation}
  
-\subsubsection{Generación de gráficas}
+\subsubsection*{Generación de gráficas}
  
 El programa genera dos gráficas:
  
@@ -281,7 +281,7 @@ El programa genera dos gráficas:
  
 Los ejes horizontales están etiquetados en unidades de tiempo (segundos).
  
-\subsection{Ejemplo numérico}
+\subsection*{Ejemplo numérico}
  
 Se reproduce el ejemplo de la tarea propuesta:
  
@@ -322,7 +322,7 @@ x[n] = \sin\left(2\pi \cdot \frac{5}{7} \cdot n\right)
  
 Estas mismas muestras pueden interpretarse también como provenientes de una señal con frecuencia alias $F_{\text{alias}} = -2/7$ Hz.
  
-\subsection{Resultados esperados}
+\subsection*{Resultados esperados}
  
 El programa genera gráficas que visualizan:
  
@@ -334,7 +334,7 @@ El programa genera gráficas que visualizan:
  
 Este ejemplo ilustra por qué es importante respetar el teorema de Nyquist en aplicaciones de procesamiento digital de señales.
  
-\subsection{Archivos generados}
+\subsection*{Archivos generados}
  
 El programa genera:
  
@@ -342,8 +342,8 @@ El programa genera:
 	\item \textbf{figura\_problema2.png}: gráfica con la visualización de la señal, su alias y las muestras.
 \end{itemize}
  
-\subsection{Conclusión}
- 
+\subsection*{Conclusión}
+
 La visualización del fenómeno de aliasing es fundamental para entender los límites del muestreo digital. El programa desarrollado permite explorar cómo diferentes frecuencias de muestreo afectan la representación digital de señales analógicas, y demuestra por qué sistemas de grabación real (como audio digital) deben usar filtros anti-aliasing previos al muestreo.
 
 
@@ -390,6 +390,7 @@ Portadora & $1000$ Hz & $1.0$ & Portadora de transmisión \\
 Banda lateral superior & $1100$ Hz & $0.25$ & Resultado de modular 100 Hz \\
 \bottomrule
 \end{tabular}
+\caption{Componentes de frecuencia de $x(t)$ tras la descomposición en tonos puros}
 \end{table}
 
 \subsubsection*{Frecuencia de Nyquist}
@@ -440,6 +441,7 @@ $1000$ Hz & $1000 - 1 \times 800 = 200$ & $200$ Hz $\times$ \\
 $1100$ Hz & $1100 - 1 \times 800 = 300$ & $300$ Hz $\times$ \\
 \bottomrule
 \end{tabular}
+\caption{Plegado de los componentes de $x(t)$ al muestrear con $F_s = 800$ Hz}
 \end{table}
 
 Con un filtro pasa-bajo con frecuencia de corte aproximadamente 150 Hz:
@@ -514,6 +516,7 @@ Error cuadrático medio (RMS) & $0.547$ \\
 Correlación & $0.653$ \\
 \bottomrule
 \end{tabular}
+\caption{Estadísticas de error entre $m[n]$ recuperado y $m(t)$ directo}
 \end{table}
 
 La correlación entre las muestras recuperadas y directas es $0.653$, indicando una \textbf{recuperación adecuada} del tono de información (100 Hz).
@@ -555,6 +558,7 @@ $90^\circ$ & $0$ & $0$ & $\times$ \textbf{NO} \\
 $180^\circ$ & $-1.0$ & $-0.25$ & $\checkmark$ Sí \\
 \bottomrule
 \end{tabular}
+\caption{Amplitud del tono de 100 Hz recuperado según la fase $\phi$ de la portadora}
 \end{table}
 
 \subsubsection*{Conclusión}
@@ -620,6 +624,7 @@ Recuperación normal $(\phi \neq \pi/2)$ & Sí & Correlación $0.653$ \\
 Recuperación con $\phi = \pi/2$ & No & Información perdida \\
 \bottomrule
 \end{tabular}
+\caption{Resumen de resultados del Problema 3}
 \end{table}
 
 \subsection*{Conceptos Clave Demostrados}
