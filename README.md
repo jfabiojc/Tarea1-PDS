@@ -51,7 +51,6 @@ tarea1_pds/
 ├── requirements.txt # Dependencias Python
 ├── .gitignore # Archivos ignorados por Git
 ├── src/
-│ ├── problema_1.py # Muestreo y aliasing musicales
 │ ├── problema_2.py # Visualización de señal y alias
 │ ├── problema_3.py # Aliasing para señal modulada
 │ ├── problema_4.py # Cuantización y punto fijo
@@ -60,7 +59,8 @@ tarea1_pds/
 └── docs/
 ├── enunciado.pdf # Enunciado de la tarea (entregado por el profesor)
 ├── informe.tex # Fuente LaTeX del reporte
-└── informe.pdf # Reporte con respuestas teóricas (compilado)
+├── informe.pdf # Reporte con respuestas teóricas (compilado)
+└── figuras/ # Gráficas generadas por los scripts (ej. figura_problema2.png)
 
 
 ## Ejecución
