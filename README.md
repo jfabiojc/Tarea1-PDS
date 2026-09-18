@@ -46,21 +46,23 @@ pip install -r requirements.txt
 
 ## Estructura del Proyecto
 
+```
 tarea1_pds/
-├── README.md # Este archivo
-├── requirements.txt # Dependencias Python
-├── .gitignore # Archivos ignorados por Git
+├── README.md               # Este archivo
+├── requirements.txt        # Dependencias Python
+├── .gitignore               # Archivos ignorados por Git
 ├── src/
-│ ├── problema_2.py # Visualización de señal y alias
-│ ├── problema_3.py # Aliasing para señal modulada
-│ ├── problema_4.py # Cuantización y punto fijo
-│ ├── problema_5.py # Caso de conducción temeraria
-│ └── utils.py # Funciones auxiliares
+│   ├── problema_2.py       # Visualización de señal y alias
+│   ├── problema_3.py       # Aliasing para señal modulada
+│   ├── problema_4.py       # Cuantización y punto fijo
+│   ├── problema_5.py       # Caso de conducción temeraria
+│   └── utils.py            # Funciones auxiliares
 └── docs/
-├── enunciado.pdf # Enunciado de la tarea (entregado por el profesor)
-├── informe.tex # Fuente LaTeX del reporte
-├── informe.pdf # Reporte con respuestas teóricas (compilado)
-└── figuras/ # Gráficas generadas por los scripts (ej. figura_problema2.png)
+    ├── enunciado.pdf       # Enunciado de la tarea (entregado por el profesor)
+    ├── informe.tex         # Fuente LaTeX del reporte
+    ├── informe.pdf         # Reporte con respuestas teóricas (compilado)
+    └── figuras/            # Gráficas generadas por los scripts (ej. figura_problema2.png)
+```
 
 
 ## Ejecución
