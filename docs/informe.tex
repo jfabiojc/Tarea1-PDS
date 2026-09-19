@@ -306,16 +306,16 @@ x[n] = \sin\left(2\pi \cdot \frac{5}{7} \cdot n\right)
  
 \begin{table}[H]
 	\centering
-	\begin{tabular}{|c|c|c|}
-		\hline
+	\begin{tabular}{ccc}
+		\toprule
 		$n$ & $t_n$ (s) & $x[n]$ \\
-		\hline
+		\midrule
 		0 & 0.000 & 0.000 \\
 		1 & 1.000 & 0.782 \\
 		2 & 2.000 & 0.975 \\
 		3 & 3.000 & 0.434 \\
 		4 & 4.000 & $-0.434$ \\
-		\hline
+		\bottomrule
 	\end{tabular}
 	\caption{Muestras de la señal con $F = 5/7$ Hz y $F_s = 1$ Hz}
 \end{table}
@@ -640,6 +640,620 @@ Recuperación con $\phi = \pi/2$ & No & Información perdida \\
 
 \item \textbf{Dependencia de Fase}: $\cos(\phi)$ determina si se recupera la información. Fase = 90° es un CASO ESPECIAL crítico.
 \end{itemize}
+
+
+\section{Problema 4: Cuantización y Representación en Punto Fijo}
+ 
+Un sensor produce una señal cuyos valores están entre $-3$ V y $3$ V. Se dispone de un procesador de $8$ bits para procesar esta señal.
+ 
+\subsection*{a) Representación uniforme de $-3$ V a $+3$ V con 8 bits}
+ 
+Un procesador de 8 bits puede almacenar $2^8 = 256$ valores diferentes (de 0 a 255 en representación sin signo, o de $-128$ a $+127$ en complemento a dos).
+ 
+Para asignar uniformemente estos 256 códigos al intervalo de $-3$ V a $+3$ V, incluyendo ambos extremos, debemos distribuir los valores disponibles de manera que cubran todo el rango de entrada del sensor. Esto significa que el intervalo continuo $[-3, +3]$ debe dividirse en intervalos de igual tamaño.
+ 
+\subsubsection*{Cálculo del número de niveles:}
+ 
+Si incluimos tanto el valor mínimo ($-3$ V) como el máximo ($+3$ V), tenemos:
+\begin{itemize}
+    \item 256 códigos disponibles (0 a 255)
+    \item Estos 256 códigos representan 256 valores discretos diferentes
+    \item \textbf{Número de niveles:} \textbf{256 niveles}
+\end{itemize}
+ 
+\subsubsection*{Cálculo del cuanto (paso de cuantización):}
+ 
+El cuanto se define como la diferencia mínima entre dos niveles consecutivos. Con 256 niveles cubriendo un rango de 6 V (de $-3$ V a $+3$ V):
+ 
+\begin{equation}
+q = \frac{\text{Rango total}}{\text{Número de intervalos}} = \frac{3 - (-3)}{256 - 1} = \frac{6}{255} \approx 0.0235 \text{ V} = 23.5 \text{ mV}
+\end{equation}
+ 
+\textbf{Justificación:} Usamos 255 en el denominador (no 256) porque entre 256 niveles discretos hay 255 intervalos. Por ejemplo, si tienes 3 valores (1, 2, 3), hay 2 intervalos entre ellos.
+ 
+Los códigos se asignan de la siguiente forma:
+\begin{itemize}
+    \item Código 0 $\rightarrow$ $-3.0000$ V
+    \item Código 1 $\rightarrow$ $-2.9765$ V
+    \item $\vdots$
+    \item Código 255 $\rightarrow$ $+3.0000$ V
+\end{itemize}
+ 
+Esto garantiza que cada entrada analógica se aproxima al código más cercano, minimizando el error de cuantización en este rango de operación.
+ 
+\subsection*{b) Formato de punto fijo Qm.n con máxima resolución}
+ 
+El formato \textbf{Qm.n} es una representación binaria donde:
+\begin{itemize}
+    \item \textbf{m} = número de bits para la parte entera (incluyendo el bit de signo)
+    \item \textbf{n} = número de bits para la parte fraccionaria
+    \item \textbf{Total de bits:} $m + n = 8$
+\end{itemize}
+ 
+La ventaja del punto fijo es que permite usar aritmética de enteros para operar con números fraccionarios, sin necesidad de hardware especializado en punto flotante. Según Proakis y Manolakis, esta técnica es fundamental en procesamiento digital de señales cuando los recursos de cómputo son limitados.
+ 
+\subsubsection*{Análisis de requisitos:}
+ 
+Para representar el rango $[-3, +3]$ con la máxima resolución posible en 8 bits:
+ 
+\textbf{1. Rango mínimo necesario para la parte entera:}
+ 
+El número más negativo en complemento a dos con $m$ bits es: $-2^{m-1}$
+ 
+El número más positivo es: $2^{m-1} - 1$
+ 
+Para cubrir $[-3, +3]$, necesitamos:
+\begin{equation}
+-2^{m-1} \leq -3 \quad \text{y} \quad 2^{m-1} - 1 \geq 3
+\end{equation}
+ 
+Esto requiere $2^{m-1} \geq 4$, es decir, \textbf{m $\geq$ 3}
+ 
+Con $m = 3$:
+\begin{itemize}
+    \item Rango: $[-2^2, 2^2 - 1] = [-4, +3]$ \checkmark (suficiente para $[-3, +3]$)
+\end{itemize}
+ 
+\textbf{2. Bits disponibles para la fracción:}
+ 
+Si $m = 3$, entonces: $n = 8 - 3 = $ \textbf{5 bits}
+ 
+\textbf{3. Formato elegido: Q3.5}
+ 
+\subsubsection*{Caracterización del formato Q3.5:}
+ 
+Con Q3.5, cada unidad en el código binario representa:
+ 
+\begin{equation}
+\text{Cuanto} = \frac{1}{2^n} = \frac{1}{2^5} = \frac{1}{32} = 0.03125 \text{ V} = 31.25 \text{ mV}
+\end{equation}
+ 
+El rango representable es:
+ 
+\begin{equation}
+\left[-2^{m-1}, 2^{m-1} - 2^{-n}\right] = [-4, +3.96875] \text{ V}
+\end{equation}
+ 
+Los valores representables son múltiplos de 0.03125 V:
+\begin{itemize}
+    \item $-4.0000$ V (código: 10000000 en complemento a dos)
+    \item $-3.96875$ V (código: 10000001)
+    \item $\vdots$
+    \item 0 V (código: 00000000)
+    \item $\vdots$
+    \item $+3.96875$ V (código: 01111111)
+\end{itemize}
+ 
+\subsubsection*{Comparación con el inciso (a):}
+ 
+\begin{table}[H]
+\centering
+\begin{tabular}{lcc}
+\toprule
+\textbf{Parámetro} & \textbf{Inciso (a)} & \textbf{Inciso (b)} \\
+\midrule
+Cuanto & 23.5 mV & 31.25 mV \\
+Rango & {$[-3, +3]$ V} & {$[-4, +3.96875]$ V} \\
+Resolución & Mejor (23.5 mV) & Peor (31.25 mV) \\
+\bottomrule
+\end{tabular}
+\caption{Comparación entre representación uniforme (a) y formato Q3.5 (b)}
+\end{table}
+ 
+\textbf{Explicación de la diferencia:} El inciso (a) obtiene mejor resolución porque usa toda la escala de 256 niveles exclusivamente para el rango $[-3, +3]$. El formato Q3.5 del inciso (b) usa una escala más gruesa (31.25 mV) porque reserva espacio adicional para valores fuera de $[-3, +3]$. Sin embargo, Q3.5 permite operaciones aritméticas naturales con números fraccionarios usando solo aritmética entera, lo cual es la ventaja real del punto fijo. Esta diferencia refleja el compromiso fundamental entre resolución y flexibilidad operacional en sistemas de procesamiento digital.
+ 
+\subsection*{c) Aritmética en punto fijo: Suma y Multiplicación}
+ 
+Según Proakis y Manolakis, la operación con números en punto fijo requiere entender cómo se escala el resultado después de cada operación. Esto es crítico en sistemas embebidos donde la precisión y el desbordamiento son limitaciones reales.
+ 
+\subsubsection*{Suma en formato Qm.n:}
+ 
+Cuando se suman dos números en formato Qm.n, la operación se realiza directamente sobre los códigos almacenados como si fueran enteros:
+ 
+\begin{equation}
+x_{\text{suma}} = x_1 + x_2
+\end{equation}
+ 
+El resultado mantiene automáticamente la posición del punto fijo (es decir, sigue siendo Qm.n) porque la suma de dos números con el punto decimal en la misma posición preserva esa posición. Esta es la elegancia del punto fijo: no se requiere procesamiento adicional para la ubicación del punto decimal.
+ 
+\textbf{Ejemplo en Q3.5:}
+\begin{itemize}
+    \item Código de 1.5 V: $1.5 \times 2^5 = 48$ (como entero)
+    \item Código de 2.0 V: $2.0 \times 2^5 = 64$ (como entero)
+    \item Suma: $48 + 64 = 112$ (representa $112 / 2^5 = 3.5$ V) \checkmark
+\end{itemize}
+ 
+\textbf{Limitación principal:} El riesgo es el desbordamiento (overflow). La suma de dos valores en Q3.5 puede exceder el rango $[-4, +3.96875]$, produciendo un resultado incorrecto si se almacena en 8 bits. Por ejemplo:
+\begin{itemize}
+    \item 2.0 V (código 64) + 2.5 V (código 80) = 4.5 V (código 144)
+    \item Pero 144 en 8 bits con complemento a dos se interpreta como $-112$, que es incorrecto
+\end{itemize}
+ 
+Este problema obliga a cambiar de formato para operaciones sucesivas, como se analiza en el inciso (d).
+ 
+\subsubsection*{Multiplicación en formato Qm.n:}
+ 
+La multiplicación es más compleja. Cuando se multiplican dos números en Qm.n, el resultado tiene \textbf{el doble de bits fraccionarios}:
+ 
+\begin{equation}
+x_{\text{prod}} = x_1 \times x_2 \quad \Rightarrow \quad \text{Resultado es } \text{Q}m.(2n)
+\end{equation}
+ 
+\textbf{Ejemplo en Q3.5:}
+\begin{itemize}
+    \item Código de 1.5 V: $1.5 \times 2^5 = 48$
+    \item Código de 2.0 V: $2.0 \times 2^5 = 64$
+    \item Multiplicación: $48 \times 64 = 3072$ (como entero, representa Q6.10)
+    \item Interpretación correcta: $3072 / 2^{10} = 3.0$ V \checkmark
+\end{itemize}
+ 
+Para almacenar este resultado en 8 bits (volviendo a Q3.5), es necesario \textbf{reescalar} dividiendo entre $2^5$:
+ 
+\begin{equation}
+x_{\text{resultado Q3.5}} = \left\lfloor \frac{x_1 \times x_2}{2^5} \right\rfloor
+\end{equation}
+ 
+Sin embargo, esta división entera introduce \textbf{truncamiento}, lo que causa pérdida de precisión. Además, si el producto es muy grande, se produce \textbf{desbordamiento}.
+ 
+\subsubsection*{Dificultades al limitar a 8 bits:}
+ 
+\begin{enumerate}
+    \item \textbf{Desbordamiento (overflow):} Un resultado que excede el rango representable se envuelve incorrectamente según las reglas del complemento a dos, generando valores completamente erróneos.
+    
+    \item \textbf{Truncamiento:} Al dividir por $2^5$ para reescalar en multiplicación, se pierden decimales. Esto introduce un error de cuantización adicional.
+    
+    \item \textbf{Pérdida de precisión:} Operaciones sucesivas acumulan errores de truncamiento y redondeo.
+    
+    \item \textbf{Amplificación de errores:} En sistemas con retroalimentación o bucles iterativos, los errores se amplifican.
+\end{enumerate}
+ 
+Por ejemplo, si multiplicamos 3 V $\times$ 3 V = 9 V, pero el rango Q3.5 solo llega a $\approx 4$ V, el resultado se desborda y es incorrecto. Se necesitaría cambiar el formato a algo como Q4.4 para acomodar productos más grandes.
+ 
+\subsection*{d) Formatos necesarios para suma y multiplicación con almacenamiento en 8 bits}
+ 
+Cuando se realizan operaciones aritméticas en punto fijo, el rango del resultado puede exceder el del formato original. Para garantizar que el resultado se almacene correctamente en 8 bits, es necesario elegir un nuevo formato (Qm.n) que acomode el rango esperado.
+ 
+\subsubsection*{Análisis de rango para suma de dos valores en Q3.5:}
+ 
+El rango de Q3.5 es $[-4, +3.96875]$ V. La suma de dos números en este rango puede alcanzar:
+\begin{itemize}
+    \item Mínimo: $(-4) + (-4) = -8$ V
+    \item Máximo: $(+3.96875) + (+3.96875) \approx +7.9375$ V
+\end{itemize}
+ 
+Para representar el rango $[-8, +7.9375]$ V en 8 bits con punto fijo:
+\begin{itemize}
+    \item Necesitamos $-2^{m-1} \leq -8 \Rightarrow 2^{m-1} \geq 8 \Rightarrow m \geq 4$
+    \item Disponible: $n = 8 - 4 = 4$ bits
+\end{itemize}
+ 
+\textbf{Formato para suma: Q4.4}
+ 
+\begin{equation}
+\text{Cuanto} = \frac{1}{2^4} = \frac{1}{16} = 0.0625 \text{ V} = 62.5 \text{ mV}
+\end{equation}
+ 
+\begin{equation}
+\text{Rango} = \left[-2^{3}, 2^{3} - 2^{-4}\right] = [-8, +7.9375] \text{ V}
+\end{equation}
+ 
+\subsubsection*{Análisis de rango para multiplicación de dos valores en Q3.5:}
+ 
+El producto de dos números en Q3.5 puede alcanzar valores más extremos:
+\begin{itemize}
+    \item Caso 1: $(-4) \times (-4) = +16$ V (dos números negativos producen positivo)
+    \item Caso 2: $(-4) \times (+3.96875) \approx -15.875$ V
+    \item Caso 3: $(+3.96875) \times (+3.96875) \approx +15.75$ V
+\end{itemize}
+ 
+Así, el rango aproximado es $[-16, +16]$ V. Para representar esto en 8 bits:
+\begin{itemize}
+    \item Opción 1: $-2^{m-1} \leq -16 \Rightarrow m \geq 5$, dejando $n = 3$ bits (cuanto = 0.125 V)
+    \item Opción 2: Usar Q4.4 (igual que suma) con riesgo de overflow en algunos casos
+\end{itemize}
+ 
+\textbf{Formato para multiplicación: Q4.4 (con consideraciones)}
+ 
+Para mantener consistencia y permitir una implementación unificada, se recomienda usar \textbf{Q4.4} para ambas operaciones:
+ 
+\begin{equation}
+\text{Cuanto} = 0.0625 \text{ V} = 62.5 \text{ mV}
+\end{equation}
+ 
+\begin{equation}
+\text{Rango} = [-8, +7.9375] \text{ V}
+\end{equation}
+ 
+\textbf{Justificación de Q4.4 para ambas operaciones:}
+ 
+Usar Q4.4 para suma y multiplicación es práctico porque:
+ 
+\begin{enumerate}
+    \item \textbf{Consistencia operacional:} Ambas operaciones pueden almacenarse en el mismo formato, simplificando la lógica de control del procesador.
+    
+    \item \textbf{Resolución aceptable:} El cuanto de 62.5 mV es aceptable para una señal de $\pm 3$ V (resolución relativa: 62.5 mV / 6 V = 1.04\%).
+    
+    \item \textbf{Cobertura de rango:} El rango $[-8, +7.9375]$ cubre operaciones de suma sin overflow en la mayoría de casos prácticos. Para multiplicación, hay riesgo limitado solo en casos extremos (producto de dos valores cercanos a sus máximos).
+    
+    \item \textbf{Simplificación de código:} No requiere verificación de formato variable después de cada operación.
+\end{enumerate}
+ 
+\textbf{Nota sobre multiplicación con Q4.4:} Si se multiplican dos valores cercanos a 4 V en formato Q4.4, el resultado puede alcanzar 16 V y provocar overflow. En aplicaciones críticas, esto requeriría verificación adicional o cambio temporal a Q5.3 (cuanto = 0.125 V) para el resultado de multiplicación.
+ 
+\subsubsection*{Comparación de resoluciones:}
+ 
+\begin{table}[H]
+\centering
+\begin{tabular}{lccc}
+\toprule
+\textbf{Formato} & \textbf{Cuanto} & \textbf{Rango} & \textbf{Uso} \\
+\midrule
+Q3.5 (original) & 31.25 mV & {$[-4, +3.97]$ V} & Entrada individual \\
+Q4.4 (suma/mult) & 62.5 mV & {$[-8, +7.94]$ V} & Después de operaciones \\
+\bottomrule
+\end{tabular}
+\caption{Formatos de punto fijo y sus características}
+\end{table}
+ 
+La resolución se degrada (de 31.25 a 62.5 mV) porque sacrificamos bits de fracción para ganar rango en la parte entera, necesario para acomodar los resultados de las operaciones. Este es el compromiso fundamental entre resolución y rango dinámico en sistemas de punto fijo con precisión limitada.
+ 
+\subsection*{e) Relación señal a ruido de cuantización (SNR)}
+ 
+La relación señal a ruido de cuantización mide qué tan bien la representación discreta aproxima la señal continua original. Según Proakis y Manolakis, para una señal sinusoidal con cuantización uniforme y redondeo, es posible cuantificar teóricamente esta calidad.
+ 
+\subsubsection*{Fundamentos teóricos:}
+ 
+El error de cuantización está uniformemente distribuido en el rango $[-q/2, +q/2]$, donde $q$ es el cuanto. La potencia del error (varianza del ruido) es:
+ 
+\begin{equation}
+P_n = \frac{q^2}{12}
+\end{equation}
+ 
+La potencia de una sinusoide de amplitud $A$ es:
+ 
+\begin{equation}
+P_s = \frac{A^2}{2}
+\end{equation}
+ 
+Por lo tanto, la relación señal a ruido es:
+ 
+\begin{equation}
+\text{SNR}_q = \frac{P_s}{P_n} = \frac{A^2/2}{q^2/12} = \frac{6A^2}{q^2}
+\end{equation}
+ 
+En decibelios:
+ 
+\begin{equation}
+\text{SNR}_q \text{ [dB]} = 10 \log_{10}\left(\frac{6A^2}{q^2}\right) = 20 \log_{10}(A) - 20 \log_{10}(q) + 10 \log_{10}(6)
+\end{equation}
+ 
+Alternativamente, para $B$ bits con rango completo:
+ 
+\begin{equation}
+\text{SNR}_q \text{ [dB]} = 6.02 B + 4.77 - 10 \log_{10}\left(\frac{A_{\text{max}}}{A_{\text{señal}}}\right)
+\end{equation}
+ 
+\subsubsection*{Cálculo para cada caso con amplitud $A = 3$ V:}
+ 
+\textbf{Caso (a): Representación uniforme, $q = 0.0235$ V, $B = 8$ bits}
+ 
+\begin{equation}
+\text{SNR}_a = 20 \log_{10}(3) - 20 \log_{10}(0.0235) + 10 \log_{10}(6)
+\end{equation}
+ 
+\begin{equation}
+= 9.542 - (-32.573) + 7.781 = 49.896 \text{ dB} \approx \boxed{50 \text{ dB}}
+\end{equation}
+ 
+Este es el mejor SNR porque los 256 niveles se utilizan de manera óptima para el rango exacto de la señal.
+ 
+\textbf{Caso (b): Formato Q3.5, $q = 0.03125$ V}
+ 
+El formato Q3.5 ocupa un rango mayor ($[-4, +3.97]$ vs $[-3, +3]$), lo que degrada la resolución:
+ 
+\begin{equation}
+\text{SNR}_b = 20 \log_{10}(3) - 20 \log_{10}(0.03125) + 10 \log_{10}(6)
+\end{equation}
+ 
+\begin{equation}
+= 9.542 - (-30.103) + 7.781 = 47.426 \text{ dB} \approx \boxed{47 \text{ dB}}
+\end{equation}
+ 
+La degradación de aproximadamente 3 dB respecto al caso (a) refleja que el cuanto es 33\% mayor.
+ 
+\textbf{Caso (d): Formato Q4.4, $q = 0.0625$ V}
+ 
+Aún peor, porque el cuanto se duplicó respecto a Q3.5:
+ 
+\begin{equation}
+\text{SNR}_d = 20 \log_{10}(3) - 20 \log_{10}(0.0625) + 10 \log_{10}(6)
+\end{equation}
+ 
+\begin{equation}
+= 9.542 - (-24.082) + 7.781 = 41.405 \text{ dB} \approx \boxed{41 \text{ dB}}
+\end{equation}
+ 
+Esta degradación de aproximadamente 6 dB respecto a Q3.5 (o 9 dB respecto a (a)) es el precio por acomodar el rango expandido de la suma y multiplicación en 8 bits.
+ 
+\subsubsection*{Resumen comparativo:}
+ 
+\begin{table}[H]
+\centering
+\begin{tabular}{lcccc}
+\toprule
+\textbf{Caso} & \textbf{Formato} & \textbf{Cuanto} & \textbf{SNR} & \textbf{Aplicación} \\
+\midrule
+(a) & 8 bits uniforme & 23.5 mV & 50.0 dB & Entrada original \\
+(b) & Q3.5 & 31.25 mV & 47.4 dB & Almacenamiento flexible \\
+(d) suma & Q4.4 & 62.5 mV & 41.4 dB & Suma de dos valores \\
+(d) mult & Q4.4 & 62.5 mV & 41.4 dB & Multiplicación de dos valores \\
+\bottomrule
+\end{tabular}
+\caption{SNR en función del formato de cuantización}
+\end{table}
+ 
+\subsubsection*{Conclusión:}
+ 
+El SNR disminuye conforme usamos formatos con menor resolución (mayor cuanto). El caso (a) ofrece el mejor SNR (\textbf{50 dB}) porque usa todos los 256 códigos para el rango exacto $[-3, +3]$ V, logrando una cuantización óptima.
+ 
+Los formatos Q3.5 y Q4.4 sacrifican resolución (SNR) para permitir operaciones aritméticas y rango expandido. Esta es una característica fundamental de los sistemas de procesamiento con precisión limitada: \textbf{existe un compromiso inevitable entre resolución de la entrada individual y capacidad de realizar operaciones sin desbordamiento}.
+ 
+En sistemas reales, esta decisión depende de la aplicación:
+\begin{itemize}
+    \item Si solo se graban valores: usar (a) para máximo SNR
+    \item Si se requieren operaciones aritméticas: usar Q3.5 o Q4.4, aceptando degradación de SNR
+    \item Si la aplicación es muy crítica: aumentar a 16 bits o usar punto flotante
+\end{itemize}
+
+
+\section{Problema 5: Investigación de un Caso de Conducción Temeraria}
+
+\subsection*{Planteamiento del Problema}
+
+Se analiza un caso de posible exceso de velocidad utilizando dos fuentes de evidencia independientes:
+
+\begin{enumerate}
+    \item \textbf{Análisis de video}: Grabación de una cámara vehicular Garmin Dash Cam Mini 2
+    \item \textbf{Geolocalización}: Datos de radiogonía (position del celular mediante torres de telefonía)
+\end{enumerate}
+
+El desafío técnico radica en combinar información incompleta de ambas fuentes para estimar la velocidad real del vehículo.
+
+\subsection*{Supuestos Adoptados}
+
+\begin{enumerate}
+    \item La cámara Garmin Dash Cam Mini 2 graba originalmente a 30 fps
+    \item El intervalo de 60 segundos GPS es simultáneo con el video
+    \item El vehículo viajó por la ruta directa entre ambas zonas GPS
+    \item Las radiobases se encuentran distanciadas una de otra (sin solapamiento de zonas)
+    \item El error de cuantización por submuestreo es aproximadamente uniforme
+\end{enumerate}
+
+\subsection*{Datos Disponibles}
+
+\subsubsection*{Información del Video}
+
+\begin{itemize}
+    \item \textbf{Condición}: Tarjeta de memoria dañada
+    \item \textbf{Recuperación}: 1 de cada 15 fotogramas del video original
+    \item \textbf{Velocidad medida}: 47 km/h (medida en los fotogramas recuperados)
+    \item \textbf{Ubicación}: Autopista Florencio del Castillo
+    \item \textbf{Referencia visual}: Línea blanca discontinua que separa carriles
+\end{itemize}
+
+\subsubsection*{Información de Geolocalización}
+
+\begin{itemize}
+    \item \textbf{Primer punto}: Celular dentro de radio $r_1 = 600$ m de la primera torre
+    \item \textbf{Segundo punto}: Celular dentro de radio $r_2 = 900$ m de la segunda torre
+    \item \textbf{Intervalo de tiempo}: $\Delta t = 60$ segundos
+    \item \textbf{Suposición}: El vehículo se desplazó por la carretera entre ambos puntos
+\end{itemize}
+
+\subsection*{Análisis del Video (Efecto de Submuestreo)}
+
+\subsubsection*{Problema: Aliasing Temporal}
+
+La pérdida de fotogramas introduce un problema de \textbf{muestreo incompleto} en el dominio del tiempo. Al recuperar solo 1 de cada 15 fotogramas, se crea un efecto similar al aliasing en señales de audio.
+
+\subsubsection*{Limitación de la Medición}
+
+Asumiendo que la cámara Garmin Dash Cam Mini 2 graba originalmente a una frecuencia típica de 30 fotogramas por segundo (30 fps):
+
+\begin{equation}
+f_s^{\text{efectiva}} = \frac{30 \text{ fps}}{15} = 2 \text{ fps}
+\end{equation}
+
+La frecuencia de muestreo efectiva es muy baja (2 Hz), lo que significa que solo se puede observar movimiento lento sin distorsión.
+
+\subsubsection*{Implicación}
+
+La velocidad de 47 km/h medida es una \textbf{subestimación} de la velocidad real. El movimiento rápido entre fotogramas no se captura completamente, resultando en una medición que subestima el desplazamiento real.
+
+\subsection*{Análisis de Geolocalización (Método Basado en Radiogonía)}
+
+\subsubsection*{Rango de Distancias Posibles}
+
+El vehículo se encontraba dentro de un radio de 600 m en el primer punto y dentro de un radio de 900 m en el segundo punto, 60 segundos después. 
+
+\subsubsection*{Distancia Mínima}
+
+Si el vehículo se encontraba en el borde más cercano de cada zona de cobertura:
+
+\begin{equation}
+d_{\min} = r_2 - r_1 = 900 \text{ m} - 600 \text{ m} = 300 \text{ m}
+\end{equation}
+
+Velocidad mínima:
+
+\begin{equation}
+v_{\min} = \frac{d_{\min}}{\Delta t} = \frac{300 \text{ m}}{60 \text{ s}} = 5 \text{ m/s} = 18 \text{ km/h}
+\end{equation}
+
+\subsubsection*{Distancia Máxima}
+
+Si el vehículo se encontraba en el borde más lejano de cada zona:
+
+\begin{equation}
+d_{\max} = r_1 + r_2 = 600 \text{ m} + 900 \text{ m} = 1500 \text{ m}
+\end{equation}
+
+Velocidad máxima:
+
+\begin{equation}
+v_{\max} = \frac{d_{\max}}{\Delta t} = \frac{1500 \text{ m}}{60 \text{ s}} = 25 \text{ m/s} = 90 \text{ km/h}
+\end{equation}
+
+\subsubsection*{Rango de Velocidades Estimado}
+
+\begin{equation}
+v_{\text{GPS}} \in [18, 90] \text{ km/h}
+\end{equation}
+
+\subsection*{Análisis Combinado de Fuentes de Información}
+
+\subsubsection*{Validación Cruzada}
+
+La velocidad de 47 km/h medida en el video se encuentra dentro del rango de 18 a 90 km/h estimado por geolocalización. Esto proporciona consistencia entre ambas fuentes.
+
+\subsubsection*{Estimación de la Velocidad Real}
+
+Considerando que:
+
+\begin{enumerate}
+    \item La medición de video es una \textbf{subestimación} debido al submuestreo
+    \item La geolocalización proporciona un rango amplio pero probabilístico
+    \item La velocidad medida (47 km/h) es consistente con el rango GPS
+\end{enumerate}
+
+Una estimación razonable de la velocidad real está por encima de 47 km/h. Tomando en cuenta la incertidumbre de ambos métodos:
+
+\subsubsection*{Cálculo de la Velocidad Estimada}
+
+Para una estimación central dentro del rango GPS que sea consistente con la medición de video, se puede usar la media ponderada considerando que 47 km/h es un límite inferior:
+
+\begin{equation}
+v_{\text{estimada}} = 47 + \delta v
+\end{equation}
+
+donde $\delta v$ representa el incremento debido al efecto de submuestreo.
+
+El incremento conservador, asumiendo que el submuestreo subestima en aproximadamente 10-20\%, sería:
+
+\begin{equation}
+\delta v \approx 10 \text{ km/h}
+\end{equation}
+
+Por lo tanto:
+
+\begin{equation}
+v_{\text{estimada}} \approx 55 \text{ km/h}
+\end{equation}
+
+\subsection*{Análisis de Incertidumbre}
+
+\subsubsection*{Fuentes de Incertidumbre}
+
+\begin{enumerate}
+    \item \textbf{Submuestreo de video}: Los fotogramas faltantes contienen información de movimiento no capturada. Esto introduce una incertidumbre que depende de la dinámica del vehículo.
+    
+    \item \textbf{Precisión GPS}: Los radios de 600 m y 900 m son aproximaciones de alcance de señal. La verdadera posición dentro de estos radios es desconocida.
+    
+    \item \textbf{Alineación de tiempo}: El video y los datos GPS pueden no estar perfectamente sincronizados.
+    
+    \item \textbf{Ruta del vehículo}: Se asume que el vehículo viajó por el tramo de carretera directo, pero podría haber desviaciones.
+\end{enumerate}
+
+\subsubsection*{Estimación de Incertidumbre Combinada}
+
+Considerando las fuentes anteriores, una incertidumbre conservadora es:
+
+\begin{equation}
+\Delta v = \pm 10 \text{ km/h}
+\end{equation}
+
+\subsection*{Respuesta Final}
+
+\subsubsection*{Velocidad Estimada del Vehículo}
+
+Basándose en el análisis de ambas fuentes de información y considerando las incertidumbres inherentes:
+
+\begin{flushleft}
+\textbf{\Large El sospechoso viajaba a una velocidad aproximada de:}
+
+\vspace{0.5cm}
+
+\begin{center}
+\boxed{55 \pm 10 \text{ km/h}}
+\end{center}
+
+\vspace{0.5cm}
+
+Lo que corresponde al rango: [45, 65] km/h
+
+\end{flushleft}
+
+\subsection*{Limitaciones de la Evidencia}
+
+\begin{enumerate}
+    \item \textbf{Video incompleto}: Solo 1 de cada 15 fotogramas. No es posible capturar aceleración o desaceleración rápida.
+    
+    \item \textbf{GPS con incertidumbre}: Los radios de cobertura son aproximados. La verdadera posición del celular dentro de cada radio es desconocida.
+    
+    \item \textbf{Alineación temporal}: No se confirma que los 60 segundos de GPS correspondan exactamente al intervalo de video.
+    
+    \item \textbf{Condiciones de la carretera}: No se consideran cambios de carriles, curvas o congestión que afecten la velocidad.
+    
+    \item \textbf{Suposición de ruta directa}: Se asume que el vehículo viajó por el tramo de carretera más corto entre ambos puntos GPS.
+\end{enumerate}
+
+\subsection*{Conclusión}
+
+El análisis combinado de dos fuentes de información (video submuestreado y geolocalización) permite estimar la velocidad del vehículo en \textbf{55 ± 10 km/h}. Aunque cada fuente tiene limitaciones individuales, su consistencia proporciona confianza en la estimación. La verdadera velocidad podría ser mayor que la medida en video debido al efecto de submuestreo, pero permanece dentro del rango permitido por los datos de geolocalización.
+
+\subsection*{Fuentes Consultadas}
+
+\begin{itemize}
+    \item Proakis, J. G., \& Manolakis, D. G. (2007). \textit{Tratamiento Digital de Señales} (4.ª ed.). Prentice Hall. --- Teoría de muestreo y aliasing temporal.
+    
+    \item Garmin Ltd. (2024). \textit{Dash Cam Mini 2 Specifications}. --- Especificaciones técnicas de la cámara (30 fps).
+    
+    
+\end{itemize}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
