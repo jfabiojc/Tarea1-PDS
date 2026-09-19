@@ -79,27 +79,36 @@ Contando 38 semitonos desde La4:
     \item La4 (0 semitonos)
     \item La\#4, Si4, Do5, Do\#5, Re5, Re\#5, Mi5, Fa5, Fa\#5, Sol5, Sol\#5, La5 (12 semitonos)
     \item La\#5, Si5, Do6, Do\#6, Re6, Re\#6, Mi6, Fa6, Fa\#6, Sol6, Sol\#6, La6 (24 semitonos)
-    \item La\#6, Si6, Do7, Do\#7, Re7, Re\#7, Mi7, Fa7, Fa\#7 (36 semitonos)
-    \item Sol7 (37 semitonos)
-    \item Sol\#7 (38 semitonos) $\approx$ 3948 Hz
+    \item La\#6, Si6, Do7, Do\#7, Re7, Re\#7, Mi7, Fa7, Fa\#7, Sol7, Sol\#7, La7 (36 semitonos)
+    \item La\#7 (37 semitonos)
+    \item Si7 (38 semitonos) $\approx$ 3951 Hz
 \end{itemize}
- 
-La nota más alta es aproximadamente \textbf{Sol\#7} (o La7, dependiendo del redondeo), con una frecuencia de aproximadamente:
+
+La nota más alta es \textbf{Si7 (B7)}, con una frecuencia de:
 \[
-F_{\text{Sol\#7}} = 440 \cdot 2^{38/12} \approx 3948 \text{ Hz}
+F_{\text{Si7}} = 440 \cdot 2^{38/12} \approx 3951 \text{ Hz}
 \]
- 
-o más precisamente:
+
+La siguiente nota, Do8 (39 semitonos), ya excede el límite de Nyquist:
 \[
-F_{\text{La7}} = 440 \cdot 2^{39/12} \approx 3520 \text{ Hz}
+F_{\text{Do8}} = 440 \cdot 2^{39/12} \approx 4186 \text{ Hz} > f_N = 4000 \text{ Hz}
 \]
- 
-\textbf{Respuesta:} La nota más alta que puede grabarse es aproximadamente \textbf{Sol\#7 o La7}, con frecuencias cercanas a 3948-4000 Hz.
+
+\textbf{Respuesta:} La nota más alta que puede grabarse sin aliasing es \textbf{Si7 (B7) $\approx$ 3951 Hz}.
  
 \subsection*{c) Aliasing en Grabación de Notas de Piccolo}
- 
-Cuando un intérprete intenta grabar una nota cuya frecuencia es superior a la frecuencia de Nyquist (\(f_N = 4000 \text{ Hz}\)), ocurre el fenómeno de \textbf{aliasing}.
- 
+
+Cuando un intérprete intenta grabar una nota cuya frecuencia es superior a la frecuencia de Nyquist (\(f_N = 4000 \text{ Hz}\)), ocurre el fenómeno de \textbf{aliasing}. El artículo menciona digitaciones para alcanzar hasta un Mi\(\flat\)8 en el píccolo; a continuación se analiza qué ocurriría si un intérprete lograra emitir esa nota.
+
+\subsubsection*{Frecuencia real de Mi\(\flat\)8}
+
+Mi\(\flat\)8 (Re\#8) se ubica 42 semitonos por encima de La4 (3 octavas más 3 semitonos: La4 $\to$ La7 son 36 semitonos, y de La7 a Mi\(\flat\)8 hay 6 semitonos más pasando por Do8):
+\[
+F_{\text{Mi}\flat 8} = 440 \cdot 2^{42/12} \approx 4978 \text{ Hz}
+\]
+
+Como \(F_{\text{Mi}\flat 8} = 4978 \text{ Hz} > f_N = 4000 \text{ Hz}\), esta nota está fuera del rango que el sistema puede muestrear sin aliasing.
+
 \subsubsection*{¿Qué ocurre durante la grabación?}
  
 Si se intenta grabar una nota con frecuencia \(f > f_N\), la teoría del muestreo establece que dicha componente de frecuencia se ``refleja'' o ``dobla'' dentro del rango de Nyquist, creando una componente de frecuencia alias:
@@ -119,15 +128,24 @@ donde \(k\) es un entero seleccionado tal que \(f_{\text{alias}} < f_N\).
     
     \item \textbf{Pérdida de información:} La información original de la nota de alta frecuencia se pierde permanentemente durante el muestreo.
     
-    \item \textbf{Ejemplo:} Si se graba una nota a \(f = 5000 \text{ Hz}\), el alias sería:
+    \item \textbf{Ejemplo (Mi\(\flat\)8):} Al grabar Mi\(\flat\)8 (\(F = 4978 \text{ Hz}\)) con \(f_s = 8000 \text{ Hz}\), el alias sería:
     \[
-    f_{\text{alias}} = 5000 - 8000 = -3000 \text{ Hz} \rightarrow |f_{\text{alias}}| = 3000 \text{ Hz}
+    f_{\text{alias}} = f_s - F = 8000 - 4978 \approx 3022 \text{ Hz}
     \]
-    Se escucharía una nota correspondiente a 3000 Hz en lugar de 5000 Hz.
+    Se escucharía una frecuencia de aproximadamente 3022 Hz en lugar de 4978 Hz.
 \end{enumerate}
- 
+
 \textbf{Explicación del fenómeno:} El Teorema de Nyquist-Shannon establece que para reconstruir fielmente una señal analógica, la frecuencia de muestreo debe ser al menos el doble de la frecuencia máxima presente en la señal. Si esta condición no se cumple, las componentes de alta frecuencia se ``replican'' en las bajas frecuencias, causando aliasing.
- 
+
+\subsubsection*{Frecuencia y nota escuchadas al reproducir la grabación}
+
+La frecuencia que se escuchará al reproducir la grabación es, por lo tanto, de aproximadamente \textbf{3022 Hz}. La nota musical más cercana a esta frecuencia es \textbf{Fa\#7 (F\#7)}, cuya frecuencia teórica (33 semitonos sobre La4) es:
+\[
+F_{\text{Fa\#7}} = 440 \cdot 2^{33/12} \approx 2960 \text{ Hz}
+\]
+
+La diferencia entre la frecuencia de alias (3022 Hz) y Fa\#7 (2960 Hz) es de unos 62 Hz (aproximadamente 36 centésimas de semitono por encima), por lo que al reproducir la grabación se escucharía una nota ligeramente más aguda que un Fa\#7, muy distinta de la nota Mi\(\flat\)8 que realmente se interpretó.
+
 \subsection*{d) Filtro Anti-aliasing}
  
 Un \textbf{filtro anti-aliasing} es un filtro paso-bajo analógico que se aplica a la señal \textbf{antes} del proceso de muestreo. Su objetivo es eliminar todas las componentes de frecuencia superiores a la frecuencia de Nyquist.
@@ -187,7 +205,7 @@ En la práctica, los filtros anti-aliasing son diseñados con:
  
 \subsection*{Conclusión}
 
-El sistema de grabación a 8 kHz tiene una frecuencia de Nyquist de 4 kHz, lo que limita la captura a notas musicales hasta aproximadamente Sol\#7 o La7. Sin un filtro anti-aliasing, cualquier intento de grabar notas más agudas resultaría en aliasing y distorsión. Con un filtro anti-aliasing adecuadamente diseñado, se previene el aliasing eliminando las componentes de alta frecuencia antes del muestreo.
+El sistema de grabación a 8 kHz tiene una frecuencia de Nyquist de 4 kHz, lo que limita la captura a notas musicales hasta aproximadamente Si7 ($\approx 3951$ Hz). Sin un filtro anti-aliasing, cualquier intento de grabar notas más agudas resultaría en aliasing y distorsión. Con un filtro anti-aliasing adecuadamente diseñado, se previene el aliasing eliminando las componentes de alta frecuencia antes del muestreo.
  
 
 \section{Problema 2: Visualización de una Señal y su Alias}
@@ -311,10 +329,10 @@ x[n] = \sin\left(2\pi \cdot \frac{5}{7} \cdot n\right)
 		$n$ & $t_n$ (s) & $x[n]$ \\
 		\midrule
 		0 & 0.000 & 0.000 \\
-		1 & 1.000 & 0.782 \\
-		2 & 2.000 & 0.975 \\
-		3 & 3.000 & 0.434 \\
-		4 & 4.000 & $-0.434$ \\
+		1 & 1.000 & $-0.975$ \\
+		2 & 2.000 & 0.434 \\
+		3 & 3.000 & 0.782 \\
+		4 & 4.000 & $-0.782$ \\
 		\bottomrule
 	\end{tabular}
 	\caption{Muestras de la señal con $F = 5/7$ Hz y $F_s = 1$ Hz}
@@ -341,7 +359,13 @@ El programa genera:
 \begin{itemize}
 	\item \textbf{figura\_problema2.png}: gráfica con la visualización de la señal, su alias y las muestras.
 \end{itemize}
- 
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figuras/figura_problema2.png}
+\caption{Señal original, su alias y las muestras tomadas, para $F = 5/7$ Hz y $F_s = 1$ Hz}
+\end{figure}
+
 \subsection*{Conclusión}
 
 La visualización del fenómeno de aliasing es fundamental para entender los límites del muestreo digital. El programa desarrollado permite explorar cómo diferentes frecuencias de muestreo afectan la representación digital de señales analógicas, y demuestra por qué sistemas de grabación real (como audio digital) deben usar filtros anti-aliasing previos al muestreo.
@@ -476,9 +500,9 @@ Queremos obtener: $m[n] = \cos(2\pi \cdot 100 \cdot n / 800) = \cos(\pi n / 4)$
 
 \paragraph*{Procedimiento:}
 \begin{enumerate}
-\item Aplicar \textbf{filtro pasa-bajo digital} de orden 4 o superior
-\item Frecuencia de corte: aproximadamente 150 Hz
-\item Esto atenúa los componentes de 200 Hz y 300 Hz
+\item Aplicar un \textbf{filtro pasa-bajo digital} suficientemente selectivo (orden 8, corte en 110 Hz): como los alias quedan separados solo 100 Hz entre sí (100, 200 y 300 Hz) y la portadora aliasada a 200 Hz tiene 4 veces la amplitud del tono deseado, un filtro de orden bajo (p. ej. orden 4) deja pasar demasiada interferencia
+\item Esto atenúa fuertemente los componentes de 200 Hz y 300 Hz
+\item Reescalar el resultado para compensar la atenuación propia del filtro en 100 Hz y el factor de amplitud 0.25 con el que llega el tono en $x[n]$
 \item El resultado es $m[n] \approx \cos(\pi n / 4)$
 \end{enumerate}
 
@@ -491,17 +515,23 @@ donde $h[k]$ son los coeficientes del filtro pasa-bajo (Butterworth).
 
 \subsection*{d) Comprobación en Python}
 
-Se implementa un programa que:
+Se implementa un programa (\texttt{src/problema\_3.py}) que:
 \begin{enumerate}
-\item Genera la señal modulada $x(t)$ en tiempo continuo y sus muestras
-\item Aplica un filtro pasa-bajo Butterworth de orden 4
-\item Recupera aproximadamente $m[n] = \cos(2\pi 100t)$
-\item Grafica y compara con los valores directos
+\item Genera la señal modulada $x(t)$ en tiempo continuo y sus muestras a $F_s = 800$ Hz
+\item Aplica un filtro pasa-bajo Butterworth de orden 8 con corte en 110 Hz (\texttt{scipy.signal.filtfilt})
+\item Corrige la escala del resultado: como \texttt{filtfilt} aplica el filtro dos veces (adelante y atrás) para lograr fase cero, su ganancia efectiva en 100 Hz es el cuadrado de $|H(100\text{ Hz})|$; junto con el factor de amplitud 0.25 propio del tono en $x[n]$, esto se corrige multiplicando por $1/(0.25 \cdot |H(100\text{ Hz})|^2)$, calculado una única vez con \texttt{scipy.signal.freqz}
+\item Recupera $m[n] \approx \cos(2\pi 100t)$ y grafica tres ciclos, comparando con los valores directos
 \end{enumerate}
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figuras/figura_problema3_d.png}
+\caption{Señal modulada $x(t)$ con sus muestras, y comparación entre $m(t)$ original y $m[n]$ recuperado}
+\end{figure}
 
 \subsubsection*{Resultados}
 
-Las muestras recuperadas coinciden muy bien con las muestras directas de $m(t)$.
+Las muestras recuperadas coinciden prácticamente de forma exacta con las muestras directas de $m(t)$: el filtro de orden 8 (frente al de orden 4 inicialmente probado) separa correctamente el tono de 100 Hz de la portadora aliasada a 200 Hz, que tiene 4 veces más amplitud.
 
 \paragraph*{Estadísticas de Error:}
 \begin{table}[H]
@@ -510,16 +540,16 @@ Las muestras recuperadas coinciden muy bien con las muestras directas de $m(t)$.
 \toprule
 \textbf{Métrica} & \textbf{Valor} \\
 \midrule
-Error absoluto máximo & $0.849$ \\
-Error absoluto promedio & $0.482$ \\
-Error cuadrático medio (RMS) & $0.547$ \\
-Correlación & $0.653$ \\
+Error absoluto máximo & $1.09 \times 10^{-3}$ \\
+Error absoluto promedio & $2.44 \times 10^{-4}$ \\
+Error cuadrático medio (RMS) & $3.70 \times 10^{-4}$ \\
+Correlación & $1.000000$ \\
 \bottomrule
 \end{tabular}
 \caption{Estadísticas de error entre $m[n]$ recuperado y $m(t)$ directo}
 \end{table}
 
-La correlación entre las muestras recuperadas y directas es $0.653$, indicando una \textbf{recuperación adecuada} del tono de información (100 Hz).
+La correlación entre las muestras recuperadas y directas es $1.000000$, con un error absoluto máximo del orden de $10^{-3}$, lo que indica una \textbf{recuperación prácticamente exacta} del tono de información (100 Hz).
 
 \subsection*{e) Portadora con Fase Desconocida}
 
@@ -561,6 +591,33 @@ $180^\circ$ & $-1.0$ & $-0.25$ & $\checkmark$ Sí \\
 \caption{Amplitud del tono de 100 Hz recuperado según la fase $\phi$ de la portadora}
 \end{table}
 
+\subsubsection*{Comprobación en Python}
+
+Se aplica el mismo filtro y factor de escala calibrados en el inciso d) para $\phi = 0$ (sin recalibrar para cada fase, ya que en un sistema real $\phi$ no se conoce de antemano) a las señales con $\phi \in \{0^\circ, 60^\circ, 90^\circ, 180^\circ\}$.
+
+\begin{figure}[H]
+\centering
+\includegraphics[width=\textwidth]{figuras/figura_problema3_e.png}
+\caption{$m(t)$ original vs. $m[n]$ recuperado con el mismo procedimiento, para las cuatro fases de la portadora}
+\end{figure}
+
+\begin{table}[H]
+\centering
+\begin{tabular}{ccc}
+\toprule
+\textbf{Fase} & \textbf{Correlación esperada ($\cos\phi$)} & \textbf{Correlación medida} \\
+\midrule
+$0^\circ$ & $1.000$ & $1.000000$ \\
+$60^\circ$ & $0.500$ & $0.499974$ \\
+$90^\circ$ & $0.000$ & $0.000002$ \\
+$180^\circ$ & $-1.000$ & $-1.000000$ \\
+\bottomrule
+\end{tabular}
+\caption{Correlación entre $m[n]$ recuperado y $m(t)$ directo para cada fase}
+\end{table}
+
+La correlación medida coincide con $\cos(\phi)$ en los cuatro casos, confirmando numéricamente la predicción teórica $A_{100} = 0.25\cos(\phi)$: a $\phi=180^\circ$ la recuperación es perfecta pero invertida (correlación $-1$), y a $\phi=90^\circ$ la correlación es prácticamente nula, es decir, la señal recuperada no guarda ninguna relación con $m(t)$.
+
 \subsubsection*{Conclusión}
 
 \begin{center}
@@ -572,7 +629,7 @@ Cuando $\phi = \pi/2 = 90^\circ$:
 \item $\cos(\pi/2) = 0$
 \item El componente de 100 Hz \textbf{desaparece completamente}
 \item La información se pierde \textbf{irremediablemente}
-\item Correlación en 90°: $0.208$ (sin relación)
+\item Correlación en 90°: $\approx 0$ (sin relación con $m(t)$)
 \end{itemize}
 
 \subsubsection*{Razón Física}
@@ -619,8 +676,8 @@ Frecuencia de portadora & $1000$ Hz & A eliminar \\
 Frecuencia de Nyquist & $2200$ Hz & Sin aliasing intencional \\
 Frecuencia de muestreo elegida & $800$ Hz & Aliasing inteligente \\
 Componentes alias & $100, 200, 300$ Hz & Uso de filtro LPF \\
-Filtro necesario & Pasa-bajo, 150 Hz & Butterworth orden 4 \\
-Recuperación normal $(\phi \neq \pi/2)$ & Sí & Correlación $0.653$ \\
+Filtro necesario & Pasa-bajo, 110 Hz & Butterworth orden 8 \\
+Recuperación normal $(\phi = 0)$ & Sí & Correlación $1.000$ \\
 Recuperación con $\phi = \pi/2$ & No & Información perdida \\
 \bottomrule
 \end{tabular}
@@ -636,7 +693,7 @@ Recuperación con $\phi = \pi/2$ & No & Información perdida \\
 
 \item \textbf{Muestreo Estratégico}: Elegir $F_s$ no solo por Nyquist, sino considerando la aplicación. 800 Hz es mejor que 2200 Hz en este caso.
 
-\item \textbf{Filtrado Digital}: Usar filtros para eliminar componentes no deseados. Butterworth de orden 4 funciona bien.
+\item \textbf{Filtrado Digital}: Usar filtros para eliminar componentes no deseados. Un Butterworth de orden 4 resulta insuficiente cuando los componentes están muy cerca en frecuencia (100/200/300 Hz); se necesita orden 8 para una separación adecuada.
 
 \item \textbf{Dependencia de Fase}: $\cos(\phi)$ determina si se recupera la información. Fase = 90° es un CASO ESPECIAL crítico.
 \end{itemize}
@@ -866,39 +923,26 @@ El producto de dos números en Q3.5 puede alcanzar valores más extremos:
     \item Caso 3: $(+3.96875) \times (+3.96875) \approx +15.75$ V
 \end{itemize}
  
-Así, el rango aproximado es $[-16, +16]$ V. Para representar esto en 8 bits:
-\begin{itemize}
-    \item Opción 1: $-2^{m-1} \leq -16 \Rightarrow m \geq 5$, dejando $n = 3$ bits (cuanto = 0.125 V)
-    \item Opción 2: Usar Q4.4 (igual que suma) con riesgo de overflow en algunos casos
-\end{itemize}
- 
-\textbf{Formato para multiplicación: Q4.4 (con consideraciones)}
- 
-Para mantener consistencia y permitir una implementación unificada, se recomienda usar \textbf{Q4.4} para ambas operaciones:
- 
+Así, el rango aproximado es $[-16, +16]$ V. Para cubrir \textbf{todos} los valores posibles del producto, como exige el enunciado, necesitamos:
 \begin{equation}
-\text{Cuanto} = 0.0625 \text{ V} = 62.5 \text{ mV}
+-2^{m-1} \leq -16 \Rightarrow 2^{m-1} \geq 16 \Rightarrow m \geq 5
 \end{equation}
- 
+
+Con $m = 5$, quedan disponibles $n = 8 - 5 = 3$ bits fraccionarios.
+
+\textbf{Formato para multiplicación: Q5.3}
+
 \begin{equation}
-\text{Rango} = [-8, +7.9375] \text{ V}
+\text{Cuanto} = \frac{1}{2^3} = \frac{1}{8} = 0.125 \text{ V} = 125 \text{ mV}
 \end{equation}
- 
-\textbf{Justificación de Q4.4 para ambas operaciones:}
- 
-Usar Q4.4 para suma y multiplicación es práctico porque:
- 
-\begin{enumerate}
-    \item \textbf{Consistencia operacional:} Ambas operaciones pueden almacenarse en el mismo formato, simplificando la lógica de control del procesador.
-    
-    \item \textbf{Resolución aceptable:} El cuanto de 62.5 mV es aceptable para una señal de $\pm 3$ V (resolución relativa: 62.5 mV / 6 V = 1.04\%).
-    
-    \item \textbf{Cobertura de rango:} El rango $[-8, +7.9375]$ cubre operaciones de suma sin overflow en la mayoría de casos prácticos. Para multiplicación, hay riesgo limitado solo en casos extremos (producto de dos valores cercanos a sus máximos).
-    
-    \item \textbf{Simplificación de código:} No requiere verificación de formato variable después de cada operación.
-\end{enumerate}
- 
-\textbf{Nota sobre multiplicación con Q4.4:} Si se multiplican dos valores cercanos a 4 V en formato Q4.4, el resultado puede alcanzar 16 V y provocar overflow. En aplicaciones críticas, esto requeriría verificación adicional o cambio temporal a Q5.3 (cuanto = 0.125 V) para el resultado de multiplicación.
+
+\begin{equation}
+\text{Rango} = \left[-2^{4}, 2^{4} - 2^{-3}\right] = [-16, +15.875] \text{ V}
+\end{equation}
+
+\textbf{Justificación:} A diferencia de la suma, el rango del producto ($\pm 16$ V) es el doble del de la suma ($\pm 8$ V), por lo que requiere un bit entero adicional ($m=5$ en vez de $m=4$). Esto sacrifica un bit fraccionario respecto a Q4.4 (cuanto de 125 mV en vez de 62.5 mV), pero es el único formato de 8 bits que cubre \textbf{todos} los valores posibles del producto sin riesgo de desbordamiento, tal como pide el enunciado.
+
+\textbf{Nota práctica:} Un sistema real podría preferir usar Q4.4 para ambas operaciones por conveniencia de implementación (mismo formato para suma y multiplicación), pero eso implica aceptar que la multiplicación puede desbordarse cuando ambos factores están cerca de sus valores extremos (por ejemplo, $(-4)\times(-4)=16$ V, que Q4.4 no puede representar). Como el enunciado pide explícitamente cubrir todos los valores posibles, \textbf{Q5.3 es la respuesta correcta} para la multiplicación.
  
 \subsubsection*{Comparación de resoluciones:}
  
@@ -909,13 +953,14 @@ Usar Q4.4 para suma y multiplicación es práctico porque:
 \textbf{Formato} & \textbf{Cuanto} & \textbf{Rango} & \textbf{Uso} \\
 \midrule
 Q3.5 (original) & 31.25 mV & {$[-4, +3.97]$ V} & Entrada individual \\
-Q4.4 (suma/mult) & 62.5 mV & {$[-8, +7.94]$ V} & Después de operaciones \\
+Q4.4 (suma) & 62.5 mV & {$[-8, +7.94]$ V} & Después de la suma \\
+Q5.3 (multiplicación) & 125 mV & {$[-16, +15.875]$ V} & Después de la multiplicación \\
 \bottomrule
 \end{tabular}
 \caption{Formatos de punto fijo y sus características}
 \end{table}
- 
-La resolución se degrada (de 31.25 a 62.5 mV) porque sacrificamos bits de fracción para ganar rango en la parte entera, necesario para acomodar los resultados de las operaciones. Este es el compromiso fundamental entre resolución y rango dinámico en sistemas de punto fijo con precisión limitada.
+
+La resolución se degrada progresivamente (de 31.25 a 62.5 y a 125 mV) porque sacrificamos bits de fracción para ganar rango en la parte entera, necesario para acomodar los resultados de cada operación: la multiplicación necesita el doble de rango que la suma, y por lo tanto un bit entero más. Este es el compromiso fundamental entre resolución y rango dinámico en sistemas de punto fijo con precisión limitada.
  
 \subsection*{e) Relación señal a ruido de cuantización (SNR)}
  
@@ -981,19 +1026,33 @@ El formato Q3.5 ocupa un rango mayor ($[-4, +3.97]$ vs $[-3, +3]$), lo que degra
  
 La degradación de aproximadamente 3 dB respecto al caso (a) refleja que el cuanto es 33\% mayor.
  
-\textbf{Caso (d): Formato Q4.4, $q = 0.0625$ V}
- 
-Aún peor, porque el cuanto se duplicó respecto a Q3.5:
- 
+\textbf{Caso (d, suma): Formato Q4.4, $q = 0.0625$ V}
+
+El cuanto se duplicó respecto a Q3.5:
+
 \begin{equation}
-\text{SNR}_d = 20 \log_{10}(3) - 20 \log_{10}(0.0625) + 10 \log_{10}(6)
+\text{SNR}_{d,\text{suma}} = 20 \log_{10}(3) - 20 \log_{10}(0.0625) + 10 \log_{10}(6)
 \end{equation}
- 
+
 \begin{equation}
 = 9.542 - (-24.082) + 7.781 = 41.405 \text{ dB} \approx \boxed{41 \text{ dB}}
 \end{equation}
- 
-Esta degradación de aproximadamente 6 dB respecto a Q3.5 (o 9 dB respecto a (a)) es el precio por acomodar el rango expandido de la suma y multiplicación en 8 bits.
+
+Esta degradación de aproximadamente 6 dB respecto a Q3.5 (o 9 dB respecto a (a)) es el precio por acomodar el rango expandido de la suma en 8 bits.
+
+\textbf{Caso (d, multiplicación): Formato Q5.3, $q = 0.125$ V}
+
+El cuanto se duplicó de nuevo respecto a Q4.4, porque el producto necesita el doble de rango que la suma:
+
+\begin{equation}
+\text{SNR}_{d,\text{mult}} = 20 \log_{10}(3) - 20 \log_{10}(0.125) + 10 \log_{10}(6)
+\end{equation}
+
+\begin{equation}
+= 9.542 - (-18.062) + 7.781 = 35.385 \text{ dB} \approx \boxed{35 \text{ dB}}
+\end{equation}
+
+Esta es la peor resolución de los cuatro casos: al necesitar cubrir un rango de $\pm 16$ V para no perder ningún valor posible del producto, se sacrifica un bit fraccionario adicional respecto a Q4.4.
  
 \subsubsection*{Resumen comparativo:}
  
@@ -1006,7 +1065,7 @@ Esta degradación de aproximadamente 6 dB respecto a Q3.5 (o 9 dB respecto a (a)
 (a) & 8 bits uniforme & 23.5 mV & 50.0 dB & Entrada original \\
 (b) & Q3.5 & 31.25 mV & 47.4 dB & Almacenamiento flexible \\
 (d) suma & Q4.4 & 62.5 mV & 41.4 dB & Suma de dos valores \\
-(d) mult & Q4.4 & 62.5 mV & 41.4 dB & Multiplicación de dos valores \\
+(d) mult & Q5.3 & 125 mV & 35.4 dB & Multiplicación de dos valores \\
 \bottomrule
 \end{tabular}
 \caption{SNR en función del formato de cuantización}
@@ -1016,14 +1075,17 @@ Esta degradación de aproximadamente 6 dB respecto a Q3.5 (o 9 dB respecto a (a)
  
 El SNR disminuye conforme usamos formatos con menor resolución (mayor cuanto). El caso (a) ofrece el mejor SNR (\textbf{50 dB}) porque usa todos los 256 códigos para el rango exacto $[-3, +3]$ V, logrando una cuantización óptima.
  
-Los formatos Q3.5 y Q4.4 sacrifican resolución (SNR) para permitir operaciones aritméticas y rango expandido. Esta es una característica fundamental de los sistemas de procesamiento con precisión limitada: \textbf{existe un compromiso inevitable entre resolución de la entrada individual y capacidad de realizar operaciones sin desbordamiento}.
- 
+Los formatos Q3.5, Q4.4 y Q5.3 sacrifican resolución (SNR) para permitir operaciones aritméticas y rango expandido, y la degradación es mayor cuanto más amplio es el rango que hay que cubrir: el producto necesita el doble de rango que la suma, y por eso su SNR (35 dB) es el más bajo de los cuatro casos. Esta es una característica fundamental de los sistemas de procesamiento con precisión limitada: \textbf{existe un compromiso inevitable entre resolución de la entrada individual y capacidad de realizar operaciones sin desbordamiento}.
+
 En sistemas reales, esta decisión depende de la aplicación:
 \begin{itemize}
     \item Si solo se graban valores: usar (a) para máximo SNR
-    \item Si se requieren operaciones aritméticas: usar Q3.5 o Q4.4, aceptando degradación de SNR
+    \item Si se requieren operaciones aritméticas: usar Q3.5, Q4.4 o Q5.3 según la operación, aceptando degradación de SNR
     \item Si la aplicación es muy crítica: aumentar a 16 bits o usar punto flotante
 \end{itemize}
+
+
+
 
 
 \section{Problema 5: Investigación de un Caso de Conducción Temeraria}
@@ -1042,11 +1104,15 @@ El desafío técnico radica en combinar información incompleta de ambas fuentes
 \subsection*{Supuestos Adoptados}
 
 \begin{enumerate}
-    \item La cámara Garmin Dash Cam Mini 2 graba originalmente a 30 fps
-    \item El intervalo de 60 segundos GPS es simultáneo con el video
-    \item El vehículo viajó por la ruta directa entre ambas zonas GPS
-    \item Las radiobases se encuentran distanciadas una de otra (sin solapamiento de zonas)
-    \item El error de cuantización por submuestreo es aproximadamente uniforme
+    \item La cámara Garmin Dash Cam Mini 2 graba originalmente a 30 fotogramas por segundo (especificación estándar del fabricante).
+
+    \item Los 60 segundos de datos GPS y el intervalo de video analizado son aproximadamente contemporáneos.
+
+    \item El vehículo viajó continuamente por la autopista Florencio del Castillo durante el intervalo de 60 segundos sin cambios drásticos de velocidad.
+
+    \item La separación real entre las dos torres de radiogonía es pequeña frente a los radios de cobertura (600 m y 900 m), por lo que ambos radios se tratan como medidos desde un mismo punto de referencia a lo largo de la carretera al acotar la distancia recorrida por el vehículo.
+
+    \item El vehículo viajó por la ruta más directa entre los dos puntos de localización GPS (sin desviaciones significativas).
 \end{enumerate}
 
 \subsection*{Datos Disponibles}
@@ -1070,31 +1136,45 @@ El desafío técnico radica en combinar información incompleta de ambas fuentes
     \item \textbf{Suposición}: El vehículo se desplazó por la carretera entre ambos puntos
 \end{itemize}
 
-\subsection*{Análisis del Video (Efecto de Submuestreo)}
+\subsection*{Análisis del Video}
 
-\subsubsection*{Problema: Aliasing Temporal}
+\subsubsection*{Condición y Limitación}
 
-La pérdida de fotogramas introduce un problema de \textbf{muestreo incompleto} en el dominio del tiempo. Al recuperar solo 1 de cada 15 fotogramas, se crea un efecto similar al aliasing en señales de audio.
+La tarjeta de memoria se encontraba dañada. Los investigadores recuperaron solo 1 de cada 15 fotogramas del video original.
+
+La cámara Garmin Dash Cam Mini 2 graba originalmente a 30 fps. La frecuencia efectiva de fotogramas es:
+
+\begin{equation}
+f_s^{\text{eff}} = \frac{30 \text{ fps}}{15} = 2 \text{ fps}
+\end{equation}
+
+Esto equivale a un fotograma cada 0.5 segundos.
+
+\subsubsection*{Medición Obtenida}
+
+El análisis del desplazamiento de la línea blanca discontinua entre los fotogramas recuperados produce una velocidad aparente de:
+
+\begin{equation}
+v_{\text{video}} = 47 \text{ km/h}
+\end{equation}
 
 \subsubsection*{Limitación de la Medición}
 
-Asumiendo que la cámara Garmin Dash Cam Mini 2 graba originalmente a una frecuencia típica de 30 fotogramas por segundo (30 fps):
+Con solo 2 fotogramas por segundo, no es posible capturar aceleración o cambios rápidos de velocidad. La medición de 47 km/h representa una velocidad promedio durante el intervalo observado, pero:
 
-\begin{equation}
-f_s^{\text{efectiva}} = \frac{30 \text{ fps}}{15} = 2 \text{ fps}
-\end{equation}
+\begin{itemize}
+    \item No podemos verificar si el vehículo mantuvo esta velocidad constantemente
+    \item No podemos detectar cambios de velocidad más rápidos que el intervalo de 0.5 s
+    \item Existe una incertidumbre inherente al submuestreo
+\end{itemize}
 
-La frecuencia de muestreo efectiva es muy baja (2 Hz), lo que significa que solo se puede observar movimiento lento sin distorsión.
-
-\subsubsection*{Implicación}
-
-La velocidad de 47 km/h medida es una \textbf{subestimación} de la velocidad real. El movimiento rápido entre fotogramas no se captura completamente, resultando en una medición que subestima el desplazamiento real.
+Por estas razones, la medición de video no se usa como valor definitivo, sino como un punto de comparación con la geolocalización.
 
 \subsection*{Análisis de Geolocalización (Método Basado en Radiogonía)}
 
 \subsubsection*{Rango de Distancias Posibles}
 
-El vehículo se encontraba dentro de un radio de 600 m en el primer punto y dentro de un radio de 900 m en el segundo punto, 60 segundos después. 
+El vehículo se encontraba dentro de un radio de 600 m en el primer punto y dentro de un radio de 900 m en el segundo punto, 60 segundos después. Como no se conoce la distancia entre las dos torres ni la posición exacta del vehículo dentro de cada radio, se adopta la simplificación de tratar ambos radios como medidos desde un mismo punto de referencia a lo largo de la carretera (es decir, se ignora la separación real entre las dos torres frente a la magnitud de los radios de cobertura). Bajo esta simplificación, el desplazamiento del vehículo entre ambas mediciones queda acotado por la diferencia y la suma de los radios.
 
 \subsubsection*{Distancia Mínima}
 
@@ -1130,73 +1210,59 @@ v_{\max} = \frac{d_{\max}}{\Delta t} = \frac{1500 \text{ m}}{60 \text{ s}} = 25 
 v_{\text{GPS}} \in [18, 90] \text{ km/h}
 \end{equation}
 
-\subsection*{Análisis Combinado de Fuentes de Información}
+\subsection*{Validación Cruzada de Fuentes de Información}
 
-\subsubsection*{Validación Cruzada}
+\subsubsection*{Comparación de Resultados}
 
-La velocidad de 47 km/h medida en el video se encuentra dentro del rango de 18 a 90 km/h estimado por geolocalización. Esto proporciona consistencia entre ambas fuentes.
+Se tienen dos estimaciones independientes de velocidad:
 
-\subsubsection*{Estimación de la Velocidad Real}
+\begin{itemize}
+    \item \textbf{Video}: 47 km/h (con incertidumbre por submuestreo)
+    \item \textbf{Geolocalización GPS}: rango de [18, 90] km/h
+\end{itemize}
 
-Considerando que:
+La velocidad medida en video (47 km/h) cae dentro del rango permitido por geolocalización. Esto proporciona \textbf{validación cruzada}: ambas fuentes son consistentes entre sí.
 
-\begin{enumerate}
-    \item La medición de video es una \textbf{subestimación} debido al submuestreo
-    \item La geolocalización proporciona un rango amplio pero probabilístico
-    \item La velocidad medida (47 km/h) es consistente con el rango GPS
-\end{enumerate}
+\subsubsection*{Selección de la Estimación}
 
-Una estimación razonable de la velocidad real está por encima de 47 km/h. Tomando en cuenta la incertidumbre de ambos métodos:
-
-\subsubsection*{Cálculo de la Velocidad Estimada}
-
-Para una estimación central dentro del rango GPS que sea consistente con la medición de video, se puede usar la media ponderada considerando que 47 km/h es un límite inferior:
-
-\begin{equation}
-v_{\text{estimada}} = 47 + \delta v
-\end{equation}
-
-donde $\delta v$ representa el incremento debido al efecto de submuestreo.
-
-El incremento conservador, asumiendo que el submuestreo subestima en aproximadamente 10-20\%, sería:
-
-\begin{equation}
-\delta v \approx 10 \text{ km/h}
-\end{equation}
-
-Por lo tanto:
-
-\begin{equation}
-v_{\text{estimada}} \approx 55 \text{ km/h}
-\end{equation}
+Dado que ambas fuentes coinciden en el rango de 47 km/h, esta es la mejor estimación disponible basada en los datos recuperados. No hay evidencia de un error sistemático mayor que requiera corrección.
 
 \subsection*{Análisis de Incertidumbre}
 
 \subsubsection*{Fuentes de Incertidumbre}
 
 \begin{enumerate}
-    \item \textbf{Submuestreo de video}: Los fotogramas faltantes contienen información de movimiento no capturada. Esto introduce una incertidumbre que depende de la dinámica del vehículo.
+    \item \textbf{Submuestreo de video}: Solo 1 de cada 15 fotogramas. La verdadera dinámica del movimiento entre fotogramas no se captura.
     
-    \item \textbf{Precisión GPS}: Los radios de 600 m y 900 m son aproximaciones de alcance de señal. La verdadera posición dentro de estos radios es desconocida.
+    \item \textbf{Precisión GPS}: Los radios de 600 m y 900 m son aproximaciones de alcance de señal. La verdadera posición del celular dentro de cada radio es desconocida.
     
-    \item \textbf{Alineación de tiempo}: El video y los datos GPS pueden no estar perfectamente sincronizados.
+    \item \textbf{Alineación temporal}: Los 60 segundos de GPS y los fotogramas de video pueden no estar perfectamente sincronizados.
     
-    \item \textbf{Ruta del vehículo}: Se asume que el vehículo viajó por el tramo de carretera directo, pero podría haber desviaciones.
+    \item \textbf{Ruta del vehículo}: Se asume que el vehículo viajó por la carretera directa entre ambas zonas. Desviaciones o cambios de carril afectarían la distancia real.
 \end{enumerate}
 
-\subsubsection*{Estimación de Incertidumbre Combinada}
+\subsubsection*{Cuantificación de Incertidumbre}
 
-Considerando las fuentes anteriores, una incertidumbre conservadora es:
+La geolocalización GPS proporciona un rango de [18, 90] km/h. Dentro de este rango amplio, la medición de video de 47 km/h es consistente.
+
+El enunciado requiere reportar la velocidad con una incertidumbre de $\pm 10$ km/h. Esta magnitud refleja de manera conservadora las limitaciones de ambas fuentes de datos:
 
 \begin{equation}
 \Delta v = \pm 10 \text{ km/h}
 \end{equation}
 
+Esta incertidumbre es razonable considerando:
+\begin{itemize}
+    \item La ambigüedad en la posición exacta dentro de los radios GPS
+    \item Los efectos del submuestreo en la medición de video
+    \item Posibles desviaciones en la ruta del vehículo
+\end{itemize}
+
 \subsection*{Respuesta Final}
 
-\subsubsection*{Velocidad Estimada del Vehículo}
+\subsubsection*{Velocidad del Vehículo}
 
-Basándose en el análisis de ambas fuentes de información y considerando las incertidumbres inherentes:
+Basándose en la medición de video y la validación con geolocalización GPS:
 
 \begin{flushleft}
 \textbf{\Large El sospechoso viajaba a una velocidad aproximada de:}
@@ -1204,14 +1270,22 @@ Basándose en el análisis de ambas fuentes de información y considerando las i
 \vspace{0.5cm}
 
 \begin{center}
-\boxed{55 \pm 10 \text{ km/h}}
+\boxed{47 \pm 10 \text{ km/h}}
 \end{center}
 
 \vspace{0.5cm}
 
-Lo que corresponde al rango: [45, 65] km/h
+Rango estimado: [37, 57] km/h
 
 \end{flushleft}
+
+\subsubsection*{Justificación}
+
+\begin{itemize}
+    \item La medición de video de 47 km/h es consistente con el rango permitido por geolocalización GPS [18, 90] km/h.
+    \item Ambas fuentes de información son independientes y proporcionan validación cruzada.
+    \item La incertidumbre de $\pm 10$ km/h refleja las limitaciones inherentes del submuestreo de video y la precisión GPS.
+\end{itemize}
 
 \subsection*{Limitaciones de la Evidencia}
 
@@ -1229,7 +1303,7 @@ Lo que corresponde al rango: [45, 65] km/h
 
 \subsection*{Conclusión}
 
-El análisis combinado de dos fuentes de información (video submuestreado y geolocalización) permite estimar la velocidad del vehículo en \textbf{55 ± 10 km/h}. Aunque cada fuente tiene limitaciones individuales, su consistencia proporciona confianza en la estimación. La verdadera velocidad podría ser mayor que la medida en video debido al efecto de submuestreo, pero permanece dentro del rango permitido por los datos de geolocalización.
+El análisis de dos fuentes de información independientes (medición de video y geolocalización) permite estimar la velocidad del vehículo. La medición de video proporciona 47 km/h, y esta estimación es consistente con el rango GPS de [18, 90] km/h. Aunque el video submuestreado tiene limitaciones inherentes, no hay evidencia de un error sistemático que requiera corrección adicional. La incertidumbre reflejada en $\pm 10$ km/h es conservadora y apropiada dadas las fuentes de datos disponibles.
 
 \subsection*{Fuentes Consultadas}
 
@@ -1238,21 +1312,7 @@ El análisis combinado de dos fuentes de información (video submuestreado y geo
     
     \item Garmin Ltd. (2024). \textit{Dash Cam Mini 2 Specifications}. --- Especificaciones técnicas de la cámara (30 fps).
     
-    
 \end{itemize}
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

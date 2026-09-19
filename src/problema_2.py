@@ -11,27 +11,18 @@ import matplotlib.pyplot as plt
 def calcular_alias(f, fs):
     """
     Calcula la frecuencia alias de una señal.
-    
+
     El alias es la frecuencia dentro del rango -Fs/2 a Fs/2 que representa
     la señal después del muestreo.
+
+    Para sin(2*pi*f*n/fs), la única reducción válida a [-fs/2, fs/2] es la
+    modular pura f - k*fs (con k el entero más cercano a f/fs): como el seno
+    es una función impar, "reflejar" alrededor de fs/2 (f_alias = fs - f)
+    invierte el signo y ya no reproduce las mismas muestras que la señal
+    original (eso solo es válido para señales pares, como el coseno).
     """
-    # Traer la frecuencia al rango [-Fs/2, Fs/2]
-    f_alias = f
-    
-    # Si f está fuera del rango de Nyquist, aplicar plegado
-    while f_alias > fs / 2:
-        f_alias = fs - f_alias
-        if f_alias <= fs / 2:
-            break
-        f_alias = -f_alias
-    
-    while f_alias < -fs / 2:
-        f_alias = -fs - f_alias
-        if f_alias >= -fs / 2:
-            break
-        f_alias = -f_alias
-    
-    return f_alias
+    k = round(f / fs)
+    return f - k * fs
 
 def graficar_señal_y_alias(f, fs, num_ciclos):
     """
