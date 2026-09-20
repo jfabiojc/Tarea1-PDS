@@ -137,8 +137,8 @@ Informe técnico. Estimación de la velocidad de un vehículo combinando una med
 - [x] Reporte en PDF con todas las respuestas (`docs/informe.pdf`)
 - [x] Código fuente de los problemas que lo requieren (`src/`)
 - [x] README con instrucciones de instalación, construcción y ejecución
-- [ ] Acceso al repositorio otorgado al usuario **`michaelgruner`** en GitHub/GitLab
-- [ ] Respaldo en ZIP/TAR del repositorio subido a TEC Digital antes del 20 de septiembre de 2026, 23:59
+- [x] Acceso al repositorio otorgado al usuario **`michaelgruner`** en GitHub/GitLab
+- [x] Respaldo en ZIP/TAR del repositorio subido a TEC Digital antes del 20 de septiembre de 2026, 23:59
 
 ## Notas
 
